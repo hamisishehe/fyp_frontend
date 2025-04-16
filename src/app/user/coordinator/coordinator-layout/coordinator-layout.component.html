@@ -1,0 +1,13 @@
+<div class="layout-container">
+  <app-coordinator-header></app-coordinator-header>
+  <app-coordinator-sidebar></app-coordinator-sidebar>
+
+  <div class="p-4 bg-gray-200 sm:ml-64">
+    <router-outlet></router-outlet>
+    <!-- Child components will be displayed here -->
+
+    <app-coordinator-footer></app-coordinator-footer>
+  </div>
+
+  <!-- Footer will also be displayed in the LayoutComponent -->
+</div>

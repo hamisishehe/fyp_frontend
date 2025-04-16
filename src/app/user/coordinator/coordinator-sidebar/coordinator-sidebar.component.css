@@ -1,0 +1,5 @@
+.active-link {
+  color: wheat; /* Tailwind's purple-400 */
+  background-color: #1c5ec0; /* Tailwind's gray-100 */
+  margin: 5px;
+}

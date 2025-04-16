@@ -14,59 +14,105 @@
         </div>
       </div>
 
-      <form class="m-5 pt-5">
-        <div class="mb-6">
-          <label
-            for="email"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Email address</label
+      <div>
+        <div *ngIf="message">
+          <div
+            class="p-4 mb-4 text-center text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
           >
-          <input
-            type="email"
-            id="email"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="example@email.com"
-            required
-          />
-        </div>
-        <div class="mb-6">
-          <label
-            for="password"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Password</label
-          >
-          <input
-            type="password"
-            id="password"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="•••••••••"
-            required
-          />
+            <span class="font-medium"></span> {{ message }}
+          </div>
         </div>
 
-        <div class="flex items-start mb-6">
-          <div class="flex items-center h-5">
+        <form class="m-5 pt-5" (ngSubmit)="login()" #loginForm="ngForm">
+          <div class="mb-6">
+            <label
+              for="email"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Email address</label
+            >
             <input
-              id="remember"
-              type="checkbox"
-              value=""
-              class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+              [(ngModel)]="email"
+              name="email"
+              id="email"
+              type="email"
+              #emailField="ngModel"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
+              required
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="example@email.com"
               required
             />
+
+            <div
+              *ngIf="emailField.invalid && emailField.touched"
+              class="text-red-500 text-sm"
+            >
+              <small *ngIf="emailField.errors?.['required']"
+                >Email is required.</small
+              >
+              <small *ngIf="emailField.errors?.['pattern']"
+                >Please enter a valid email.</small
+              >
+            </div>
           </div>
-          <label
-            for="remember"
-            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >Remember Me</label
+          <div class="mb-6">
+            <label
+              for="password"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Password</label
+            >
+            <input
+              [(ngModel)]="password"
+              name="password"
+              type="password"
+              id="password"
+              #passwordField="ngModel"
+              required
+              minlength="4"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="•••••••••"
+              required
+            />
+
+            <div
+              *ngIf="passwordField.invalid && passwordField.touched"
+              class="text-red-500 text-sm"
+            >
+              <small *ngIf="passwordField.errors?.['required']"
+                >Password is required.</small
+              >
+              <small *ngIf="passwordField.errors?.['minlength']"
+                >Password must be at least 4 characters long.</small
+              >
+            </div>
+          </div>
+
+          <div class="flex items-start mb-6">
+            <div class="flex items-center h-5">
+              <input
+                id="remember"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                required
+              />
+            </div>
+            <label
+              for="remember"
+              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >Remember Me</label
+            >
+          </div>
+          <button
+            [disabled]="loading || loginForm.invalid"
+            type="submit"
+            class="text-slate-900 text-1xl bg-blue-400 hover:bg- focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full px-5 py-2.5 text-center"
           >
-        </div>
-        <button
-          type="submit"
-          class="text-slate-900 text-1xl bg-blue-400 hover:bg- focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full px-5 py-2.5 text-center"
-        >
-          Login
-        </button>
-      </form>
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>

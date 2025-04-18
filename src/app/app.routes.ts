@@ -16,6 +16,7 @@ import { CoordinatorCourseComponent } from './user/coordinator/coordinator-cours
 import { CoordinatorProfileComponent } from './user/coordinator/coordinator-profile/coordinator-profile.component';
 import { CoordinatorSettingsComponent } from './user/coordinator/coordinator-settings/coordinator-settings.component';
 import { CoordinatorInstructorsComponent } from './user/coordinator/coordinator-instructors/coordinator-instructors.component';
+import { CoordinatorAssignCourseComponent } from './user/coordinator/coordinator-assign-course/coordinator-assign-course.component';
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -81,6 +82,11 @@ export const routes: Routes = [
       {
         path: 'user/coordinator/coordinator-course',
         component: CoordinatorCourseComponent,
+        canActivate: [authGuardGuard],
+      },
+      {
+        path: 'user/coordinator/coordinator-assign-course',
+        component: CoordinatorAssignCourseComponent,
         canActivate: [authGuardGuard],
       },
       {

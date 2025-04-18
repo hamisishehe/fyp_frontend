@@ -1,4 +1,4 @@
-export interface UserDetails {
+export interface InstructorData {
   id: number;
   first_name: string;
   middle_name: string;

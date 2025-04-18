@@ -6,6 +6,7 @@ import { DataTable } from 'simple-datatables';
 import { environment } from '../../../environments/environment';
 import { UserDetails } from '../../../Models/userModel';
 import Swal from 'sweetalert2'
+import { InstructorData } from '../../../Models/InstructorModel';
 
 @Component({
   selector: 'app-coordinator-instructors',
@@ -18,6 +19,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
   isOpen = false;
 
   userData : UserDetails | null = null;
+  instructors: InstructorData [] = [];
 
 
   Coordinator_id : number = 0;
@@ -37,7 +39,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
   ngOnInit() {
 
     this.getProfile();
-    this.initializeTable();
+    this.GetInstructors();
   }
 
 
@@ -118,6 +120,29 @@ export class CoordinatorInstructorsComponent implements OnInit{
 
         }
       );
+}
+
+
+
+GetInstructors(){
+
+  console.log("................")
+
+  this.http.get<InstructorData[]>(`http://127.0.0.1:5000/instructors`)
+    .subscribe(
+      response => {
+
+        this.instructors = response;
+        console.log(this.instructors);
+        this.initializeTable();
+
+      },
+      error => {
+
+
+        console.log(error);
+      }
+    );
 }
 
 

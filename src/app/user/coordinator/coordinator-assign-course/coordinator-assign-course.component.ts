@@ -9,6 +9,7 @@ import { DataTable } from 'simple-datatables';
 import { InstructorData } from '../../../Models/InstructorModel';
 import { StudentData } from '../../../Models/StudentModel';
 import { NgSelectModule } from '@ng-select/ng-select';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-coordinator-assign-course',
@@ -49,6 +50,43 @@ export class CoordinatorAssignCourseComponent {
 
 
   AssignCourse(){
+
+      console.log("................")
+
+        const form_data = {
+          instructor_id: this.instructor_id,
+          course_id: this.course_id,
+          student_id: this.student_id,
+        };
+
+        const headers = { 'Content-Type': 'application/json' };
+
+
+        this.http.post(`${environment.baseUrl}/assign-course`, form_data,  { headers })
+          .subscribe(
+            response => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Course Assigned',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+
+              window.location.reload();
+
+            },
+            error => {
+
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error,
+                timer: 1500,
+              });
+
+
+            }
+          );
 
   }
 

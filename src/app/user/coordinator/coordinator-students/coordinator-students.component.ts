@@ -127,6 +127,41 @@ export class CoordinatorStudentsComponent implements OnInit{
 
 
 
+onExcelSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    this.UploadExcelFile(file);
+  }
+}
+
+UploadExcelFile(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  this.http.post(`${environment.baseUrl}/upload-students`, formData, { withCredentials: true })
+    .subscribe(
+      (response: any) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Upload complete',
+          text: `${response.message} Skipped: ${response.skipped_programmes.join(', ')}`,
+          showConfirmButton: true,
+        });
+
+        window.location.reload();
+      },
+      (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Upload failed',
+          text: error.error?.error || 'Something went wrong!',
+        });
+      }
+    );
+}
+
+
+
 GetStudents(){
 
   console.log("................")

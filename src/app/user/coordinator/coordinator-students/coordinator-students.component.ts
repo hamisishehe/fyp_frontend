@@ -17,6 +17,7 @@ import { DataTable } from 'simple-datatables';
 export class CoordinatorStudentsComponent implements OnInit{
 
   isOpen = false;
+  isUploadOpen=false;
   isLoading: boolean = true;
 
   userData : UserDetails | null = null;
@@ -134,32 +135,6 @@ onExcelSelected(event: any) {
   }
 }
 
-UploadExcelFile(file: File) {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  this.http.post(`${environment.baseUrl}/upload-students`, formData, { withCredentials: true })
-    .subscribe(
-      (response: any) => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Upload complete',
-          text: `${response.message} Skipped: ${response.skipped_programmes.join(', ')}`,
-          showConfirmButton: true,
-        });
-
-        window.location.reload();
-      },
-      (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Upload failed',
-          text: error.error?.error || 'Something went wrong!',
-        });
-      }
-    );
-}
-
 
 
 GetStudents(){
@@ -185,6 +160,63 @@ GetStudents(){
 
 
 
+isDragging = false;
+selectedFile: File | null = null;
+
+onDragOver(event: DragEvent) {
+  event.preventDefault();
+  this.isDragging = true;
+}
+
+onDragLeave(event: DragEvent) {
+  event.preventDefault();
+  this.isDragging = false;
+}
+
+onFileDrop(event: DragEvent) {
+  event.preventDefault();
+  this.isDragging = false;
+
+  const file = event.dataTransfer?.files[0];
+  if (file && this.validateExcel(file)) {
+    this.selectedFile = file;
+    this.UploadExcelFile(file);
+  }
+}
+
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file && this.validateExcel(file)) {
+    this.selectedFile = file;
+    this.UploadExcelFile(file);
+  }
+}
+
+validateExcel(file: File): boolean {
+  const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  const isValid = validTypes.includes(file.type);
+  if (!isValid) {
+    Swal.fire('Invalid file', 'Please upload a valid Excel file.', 'error');
+  }
+  return isValid;
+}
+
+UploadExcelFile(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  this.http.post(`${environment.baseUrl}/upload-students`, formData)
+    .subscribe(
+      (response: any) => {
+        Swal.fire('Success', `${response.message}`, 'success');
+        this.selectedFile = null;
+      },
+      (error) => {
+        Swal.fire('Error', error.error?.error || 'Upload failed', 'error');
+      }
+    );
+}
+
   openModal() {
     this.isOpen = true;
   }
@@ -192,6 +224,17 @@ GetStudents(){
   closeModal() {
     this.isOpen = false;
   }
+
+
+
+  openUploadModal() {
+    this.isUploadOpen = true;
+  }
+
+  closeUploadModal() {
+    this.isUploadOpen = false;
+  }
+
 
 
 

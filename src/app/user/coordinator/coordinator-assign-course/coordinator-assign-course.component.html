@@ -76,6 +76,7 @@
           bindLabel="displayText"
           bindValue="id"
           [(ngModel)]="student_id"
+          [multiple]="true"
           [trackByFn]="trackById"
           placeholder="Select a Student"
           [searchable]="true"
@@ -115,7 +116,7 @@
           </th>
               <th>
                   <span class="flex items-center">
-                     First Name
+                     Course Code
                       <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                       </svg>
@@ -124,7 +125,7 @@
 
               <th>
                 <span class="flex items-center">
-                   Middle Name
+                   Course Name
                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                     </svg>
@@ -133,7 +134,7 @@
 
             <th>
               <span class="flex items-center">
-                 Last Name
+                 Students
                   <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                   </svg>
@@ -142,21 +143,12 @@
 
           <th>
             <span class="flex items-center">
-              Email
+              Lectures
                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                 </svg>
             </span>
         </th>
-
-        <th>
-          <span class="flex items-center">
-             Phone Number
-              <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-              </svg>
-          </span>
-      </th>
 
       <th>
         <span class="flex items-center">
@@ -171,13 +163,12 @@
       </thead>
       <tbody class="bg-white">
 
-        <tr *ngFor="let item of instructors">
-             <td class="font-bold">{{item.id}}</td>
-             <td class="font-bold">{{item.first_name}}</td>
-             <td class="font-bold">{{item.middle_name}}</td>
-             <td class="font-bold">{{item.last_name}}</td>
-             <td class="font-bold">{{item.email}}</td>
-             <td class="font-bold">{{item.phone_number}}</td>
+        <tr *ngFor="let item of asignCourseResult">
+             <td class="font-bold">{{item.course_matrix_id}}</td>
+             <td class="font-bold">{{item.course.name}}</td>
+             <td class="font-bold">{{item.course.code}}</td>
+             <td class="font-bold">{{item.student.programme }}</td>
+             <td class="font-bold">{{item.instructor.name}}</td>
              <td>
               <div class="grid grid-cols-3 gap-1">
                 <a href="http://">

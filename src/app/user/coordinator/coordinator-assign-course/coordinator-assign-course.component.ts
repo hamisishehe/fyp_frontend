@@ -10,6 +10,8 @@ import { InstructorData } from '../../../Models/InstructorModel';
 import { StudentData } from '../../../Models/StudentModel';
 import { NgSelectModule } from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
+import { CourseMatrixView } from '../../../Models/CourseAssignModel';
+
 
 @Component({
   selector: 'app-coordinator-assign-course',
@@ -24,14 +26,19 @@ export class CoordinatorAssignCourseComponent {
   userData : UserDetails | null = null;
 
 
+
   course_list: CourseData [] = [];
   instructors: InstructorData [] = [];
   students: StudentData [] = [];
+  asignCourseResult: CourseMatrixView [] = [];
+  groupedCourses: CourseMatrixView[] = [];
+
+
 
 
   Coordinator_id : number = 0;
   course_id : number = 0;
-  student_id: number = 0;
+  student_id: number[] = [];
   instructor_id: number = 0;
 
 
@@ -46,6 +53,8 @@ export class CoordinatorAssignCourseComponent {
     this.GetCourse();
     this.GetInstructors();
     this.GetStudents();
+    this.GetAssignedCourse();
+
   }
 
 
@@ -136,17 +145,10 @@ GetCourse(){
     .subscribe(
       response => {
 
-        this.course_list = response
-        .map(item => ({
+        this.course_list = response.map(item => ({
           ...item,
-          displayText: `${item.course_code} | ${item.course_name}`
-        }))
-        .filter((item, index, self) =>
-          index === self.findIndex(t => t.id === item.id)
-        );
-
-
-
+          displayText: `${item.course_name} ${item.course_code}`
+        }));
 
       },
       error => {
@@ -203,6 +205,51 @@ GetStudents(){
     );
 }
 
+
+GetAssignedCourse(){
+
+  console.log("................")
+
+  this.http.get<CourseMatrixView[]>(`${environment.baseUrl}/view/course-matrix`)
+    .subscribe(
+      response => {
+
+         this.asignCourseResult = response;
+         console.log(response);
+         this.initializeTable();
+
+      },
+      error => {
+
+
+        console.log(error);
+      }
+    );
+}
+
+
+
+groupByCourse(data: CourseMatrixView[]) {
+  const grouped = new Map();
+
+  data.forEach(item => {
+    const key = item.course_matrix_id; // Or use item.course.code if that’s the unique key
+
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        course_matrix_id: item.course_matrix_id,
+        course: item.course,
+        instructor: item.instructor,
+        students: [item.student.programme],
+        lectures: item.instructor,
+      });
+    } else {
+      grouped.get(key).students.push(item.student.programme);
+    }
+  });
+
+  this.groupedCourses = Array.from(grouped.values());
+}
 
   openModal() {
     this.isOpen = true;

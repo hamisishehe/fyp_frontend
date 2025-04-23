@@ -11,7 +11,6 @@ import { TMasterHeaderComponent } from '../t-master-header/t-master-header.compo
     RouterOutlet,
     HttpClientModule,
     TMasterSidebarComponent,
-    TMasterFooterComponent,
     TMasterHeaderComponent,
   ],
   templateUrl: './timetable-master-layout.component.html',

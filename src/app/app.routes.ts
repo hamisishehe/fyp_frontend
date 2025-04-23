@@ -29,7 +29,7 @@ export const routes: Routes = [
     canActivate: [authGuardGuard],
     children: [
       {
-        path: 'user/timetable-master/t-master-dashboard',
+        path: 'user/timetable-master/dashboard',
         component: TMasterDashboardComponent,
         canActivate: [authGuardGuard],
       },
@@ -70,37 +70,37 @@ export const routes: Routes = [
     canActivate: [authGuardGuard],
     children: [
       {
-        path: 'user/coordinator/coordinator-dashboard',
+        path: 'user/coordinator/dashboard',
         component: CoordinatorDashboardComponent,
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/coordinator/coordinator-students',
+        path: 'user/coordinator/students',
         component: CoordinatorStudentsComponent,
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/coordinator/coordinator-course',
+        path: 'user/coordinator/course',
         component: CoordinatorCourseComponent,
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/coordinator/coordinator-assign-course',
+        path: 'user/coordinator/assign-course',
         component: CoordinatorAssignCourseComponent,
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/coordinator/coordinator-profile',
+        path: 'user/coordinator/profile',
         component: CoordinatorProfileComponent,
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/coordinator/coordinator-instructors',
+        path: 'user/coordinator/instructors',
         component: CoordinatorInstructorsComponent,
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/coordinator/coordinator-settings',
+        path: 'user/coordinator/settings',
         component: CoordinatorSettingsComponent,
         canActivate: [authGuardGuard],
       },

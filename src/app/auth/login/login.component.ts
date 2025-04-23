@@ -66,14 +66,14 @@ export class LoginComponent {
           if (role === 'COORDINATOR') {
             localStorage.setItem('token', token);
 
-            window.location.href = '/user/coordinator/coordinator-dashboard';
+            window.location.href = '/user/coordinator/dashboard';
             this.loading = false;
           }
 
           if (role === 'ADMIN') {
             localStorage.setItem('token', token);
 
-            window.location.href = '/user/admin/admin-dashboard';
+            window.location.href = '/user/admin/dashboard';
             this.loading = false;
           }
           if (role === 'TIMETABLEMASTER') {
@@ -81,7 +81,7 @@ export class LoginComponent {
 
             console.log('login successfully');
 
-            window.location.href = '/user/timetable-master/t-master-dashboard';
+            window.location.href = '/user/timetable-master/dashboard';
             this.loading = false;
           }
         },

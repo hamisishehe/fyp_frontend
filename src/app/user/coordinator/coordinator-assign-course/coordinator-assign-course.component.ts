@@ -26,14 +26,13 @@ export class CoordinatorAssignCourseComponent {
   userData : UserDetails | null = null;
 
 
-
   course_list: CourseData [] = [];
   instructors: InstructorData [] = [];
   students: StudentData [] = [];
+
+
+
   asignCourseResult: CourseMatrixView [] = [];
-  groupedCourses: CourseMatrixView[] = [];
-
-
 
 
   Coordinator_id : number = 0;
@@ -44,7 +43,9 @@ export class CoordinatorAssignCourseComponent {
 
   constructor(private http : HttpClient ){
 
+
   }
+
 
 
   ngOnInit() {
@@ -56,6 +57,7 @@ export class CoordinatorAssignCourseComponent {
     this.GetAssignedCourse();
 
   }
+
 
 
   AssignCourse(){
@@ -71,17 +73,36 @@ export class CoordinatorAssignCourseComponent {
         const headers = { 'Content-Type': 'application/json' };
 
 
-        this.http.post(`${environment.baseUrl}/assign-course`, form_data,  { headers })
+        this.http.post<any>(`${environment.baseUrl}/assign-course`, form_data,  { headers })
           .subscribe(
             response => {
-              Swal.fire({
-                icon: 'success',
-                title: 'Course Assigned',
-                showConfirmButton: false,
-                timer: 1500,
-              });
 
-              window.location.reload();
+              if (response.message === "Course Already Assigned") {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Course Already Assigned",
+                  timer: 1500,
+                  showConfirmButton: false
+                });
+
+                console.log(response);
+              }
+              else{
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Course Assigned',
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+
+                console.log(response);
+
+              }
+
+
+
+
 
             },
             error => {
@@ -206,50 +227,40 @@ GetStudents(){
 }
 
 
-GetAssignedCourse(){
 
-  console.log("................")
-
+GetAssignedCourse() {
   this.http.get<CourseMatrixView[]>(`${environment.baseUrl}/view/course-matrix`)
     .subscribe(
       response => {
+        const grouped: { [key: string]: any } = {};
 
-         this.asignCourseResult = response;
-         console.log(response);
-         this.initializeTable();
+        response.forEach(item => {
+          const key = `${item.course.id}_${item.instructor.id}`;
+          if (!grouped[key]) {
+            grouped[key] = {
+              course_matrix_id: item.course_matrix_id,
+              course: item.course,
+              instructor: item.instructor,
+              students: [item.student.programme]
+            };
+          } else {
+            grouped[key].students.push(item.student.programme);
+          }
+        });
 
+        this.asignCourseResult = Object.values(grouped).map((entry: any) => ({
+          ...entry,
+          studentProgrammes: entry.students.join(", ")
+        }));
+
+        this.initializeTable();
       },
       error => {
-
-
-        console.log(error);
+        console.error(error);
       }
     );
 }
 
-
-
-groupByCourse(data: CourseMatrixView[]) {
-  const grouped = new Map();
-
-  data.forEach(item => {
-    const key = item.course_matrix_id; // Or use item.course.code if that’s the unique key
-
-    if (!grouped.has(key)) {
-      grouped.set(key, {
-        course_matrix_id: item.course_matrix_id,
-        course: item.course,
-        instructor: item.instructor,
-        students: [item.student.programme],
-        lectures: item.instructor,
-      });
-    } else {
-      grouped.get(key).students.push(item.student.programme);
-    }
-  });
-
-  this.groupedCourses = Array.from(grouped.values());
-}
 
   openModal() {
     this.isOpen = true;

@@ -28,7 +28,7 @@
           <div class="mb-6">
             <label
               for="email"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              class="block mb-2 text-sm font-medium text-white dark:text-white"
               >Email address</label
             >
             <input
@@ -59,7 +59,7 @@
           <div class="mb-6">
             <label
               for="password"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              class="block mb-2 text-sm font-medium text-white dark:text-white"
               >Password</label
             >
             <input
@@ -88,29 +88,37 @@
             </div>
           </div>
 
-          <div class="flex items-start mb-6">
-            <div class="flex items-center h-5">
-              <input
-                id="remember"
-                type="checkbox"
-                value=""
-                class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                required
-              />
-            </div>
-            <label
-              for="remember"
-              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >Remember Me</label
-            >
-          </div>
+
           <button
-            [disabled]="loading || loginForm.invalid"
-            type="submit"
-            class="text-slate-900 text-1xl bg-blue-400 hover:bg- focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full px-5 py-2.5 text-center"
+          [disabled]="!loginForm.valid"
+          class="bg-blue-400 w-full py-2 rounded-lg mt-4"
+
+        >
+        <span *ngIf="loading">
+          <svg
+            class="inline mr-2 w-4 h-4 text-white animate-spin"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
           >
-            Login
-          </button>
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8z"
+            ></path>
+          </svg>
+          Loading...
+        </span>
+        <span *ngIf="!loading">Sign In</span>
+        </button>
         </form>
       </div>
     </div>

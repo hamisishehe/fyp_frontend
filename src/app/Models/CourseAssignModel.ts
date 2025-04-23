@@ -3,6 +3,7 @@ export interface CourseMatrixView {
   course: Course;
   instructor: Instructor;
   student: Student;
+  studentProgrammes?: string;
 }
 
 export interface Course {

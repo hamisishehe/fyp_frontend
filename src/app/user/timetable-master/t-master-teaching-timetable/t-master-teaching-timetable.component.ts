@@ -1,11 +1,194 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { BrowserModule } from '@angular/platform-browser';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { Session, TimetableResponse } from '../../../Models/timetableModel';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 @Component({
   selector: 'app-t-master-teaching-timetable',
-  imports: [],
+  imports: [HttpClientModule,CommonModule, DragDropModule],
   templateUrl: './t-master-teaching-timetable.component.html',
   styleUrl: './t-master-teaching-timetable.component.css'
 })
-export class TMasterTeachingTimetableComponent {
+export class TMasterTeachingTimetableComponent implements OnInit {
+
+  timetable: Session[] = [];
+  draftNumber: string = 'DRAFT TWO'; // Default value
+  releaseDate: string = new Date().toISOString().split('T')[0]; // Default to today (yyyy-mm-dd)
+
+
+  constructor(private http: HttpClient) {}
+
+
+
+  ngOnInit(): void {
+    this.fetchTimetable();
+  }
+
+  // Fetch timetable from backend
+  fetchTimetable(): void {
+    const apiUrl = 'http://localhost:5000/api/generate-timetable'; // Your Flask endpoint
+
+    this.http.post<TimetableResponse>(apiUrl, {}).subscribe(
+      (response) => {
+        if (response.status === 'success') {
+          this.timetable = response.data;  // Extract timetable data
+          console.log(this.timetable);  // Log the fetched timetable
+        } else {
+          console.error('Failed to fetch timetable:', response.message);
+        }
+      },
+      (error) => {
+        console.error('Error fetching timetable:', error);
+      }
+    );
+  }
+
+
+  getLastTimetable(): void {
+    const apiUrl = 'http://localhost:5000/api/last-timetable'; // Your Flask endpoint
+
+    this.http.get<any>(apiUrl).subscribe(
+      (response) => {
+        if (response.status === 'success') {
+          this.timetable = response;  // Extract timetable data
+          console.log(this.timetable);  // Log the fetched timetable
+        } else {
+          console.error('Failed to fetch timetable:', response.message);
+        }
+      },
+      (error) => {
+        console.error('Error fetching timetable:', error);
+      }
+    );
+  }
+
+
+
+  generatePDF() {
+    const pdf = new jsPDF();
+    const img = new Image();
+    img.src = 'images/logo.png';
+
+    img.onload = () => {
+      pdf.addImage(img, 'PNG', 10, 10, 20, 20);
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      pdf.setFont("times", "bold");
+      pdf.setFontSize(12);
+
+
+      const centerText = (text: string, yPos: number) => {
+        const textWidth = pdf.getTextWidth(text);
+        const x = (pageWidth - textWidth) / 2;
+        pdf.text(text, x, yPos);
+      };
+
+
+      let y = 20;
+      centerText("THE UNIVERSITY OF DODOMA", y);
+      y += 8;
+      centerText("COLLEGE OF INFORMATICS AND VIRTUAL EDUCATION", y);
+      y += 8;
+      centerText(`UNIVERSITY TEACHING TIMETABLE [${this.draftNumber}]`, y);
+      y += 8;
+      centerText("SEMESTER TWO 2024/2025", y);
+      y += 10;
+
+
+      const release = new Date(this.releaseDate);
+      const formattedDate = release.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      centerText(`Released on: ${formattedDate}`, y);
+
+
+      const tableColumn = ["DAY", "TIME", "COURSE", "STUDENTS", "INSTRUCTOR", "VENUE"];
+      const tableRows: string[][] = [];
+
+      this.timetable.forEach(session => {
+        const sessionData: string[] = [
+          session.day,
+          session.time,
+          session.Course,
+          session.groups.join(', '),
+          session.instructor,
+          session.Venue
+        ];
+        tableRows.push(sessionData);
+      });
+
+      autoTable(pdf, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 60,
+
+        styles: {
+          lineColor: [0, 0, 0],
+          lineWidth: 0.1,
+          fontSize: 8
+        },
+        headStyles: {
+          fillColor: [230, 230, 230],
+          textColor: [0, 0, 0],
+          halign: 'center',
+          valign: 'middle'
+        },
+        bodyStyles: {
+          textColor: [0, 0, 0],
+          halign: 'center',
+          valign: 'middle'
+        },
+        didParseCell: function (data) {
+          const colIndex = data.column.index;
+          const cell = data.cell;
+
+          // Make Course italic (column index 2)
+          if (data.section === 'body' && colIndex === 2) {
+            cell.styles.fontStyle = 'italic';
+          }
+
+
+        }
+      });
+
+
+
+      pdf.save('timetable.pdf');
+    };
+  }
+
+
+  onDrop(event: CdkDragDrop<any[]>) {
+    const prev = this.timetable[event.previousIndex];
+    const curr = this.timetable[event.currentIndex];
+
+    if (event.previousIndex === event.currentIndex) return;
+
+    // Swap only the specified fields
+    [prev.Course, curr.Course] = [curr.Course, prev.Course];
+    [prev.groups, curr.groups] = [curr.groups, prev.groups];
+    [prev.instructor, curr.instructor] = [curr.instructor, prev.instructor];
+    [prev.Venue, curr.Venue] = [curr.Venue, prev.Venue];
+  }
+
+  // Update the timetable by sending the modified timetable back to the backend
+  updateTimetable(updatedTimetable: any): void {
+    const apiUrl = 'http://localhost:5000/api/update-timetable'; // Your Flask endpoint for updating
+
+    this.http.post<any>(apiUrl, { timetable: updatedTimetable }).subscribe(
+      (response) => {
+        console.log('Timetable updated successfully');
+      },
+      (error) => {
+        console.error('Error updating timetable:', error);
+      }
+    );
+  }
 
 }

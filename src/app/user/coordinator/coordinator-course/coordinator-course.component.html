@@ -93,7 +93,7 @@
   </th>
 
 
-
+<!--
 
 
 <th>
@@ -103,18 +103,18 @@
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
     </svg>
 </span>
-</th>
+</th> -->
 
   </tr>
 </thead>
 <tbody class="bg-white">
 
-<tr *ngFor="let item of course_list">
-     <td class="font-bold">{{item.id}}</td>
+<tr *ngFor="let item of course_list; let i = index">
+     <td class="font-bold">{{i + 1}}</td>
      <td class="font-bold">{{item.course_code}}</td>
      <td class="font-bold">{{item.course_name}}</td>
      <td class="font-bold">{{item.semester}}</td>
-     <td>
+     <!-- <td>
       <div>
         <svg class="w-6 h-6 text-slate-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
           <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
@@ -123,7 +123,7 @@
 
 
 
-     </td>
+     </td> -->
 
 </tr>
 
@@ -140,7 +140,7 @@
   <div class="p-2 mt-20 bg-white rounded-lg shadow-lg " style="width: 500px;">
 
     <div class="grid justify-between grid-flow-col">
-      <h3 class="mt-2 font-semibold text-md">New Students Programme</h3>
+      <h3 class="mt-2 font-semibold text-md">New Course</h3>
       <div class="flex justify-end ">
         <button (click)="closeModal()" class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">
           Close

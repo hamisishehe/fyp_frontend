@@ -1,4 +1,4 @@
-<div class="w-full h-full mt-24">
+<div class="w-full h-full mt-24 bg-gray-200">
 
 
 
@@ -21,11 +21,7 @@
 
   </ol>
   <div>
-    <button id="dropdownDefault" data-dropdown-toggle="dropdown" class="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm9-10v.4A3.6 3.6 0 0 1 8.4 9H6.61A3.6 3.6 0 0 0 3 12.605M14.458 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
-  </svg>Fix #6597<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-  </svg></button>
+
 
   </div>
 </nav>
@@ -34,10 +30,48 @@
 
 
   <div
-    class="flex flex-col col-span-1 gap-2 sm:flex-row lg:flex-row md:flex-col mt-14"
+    class="flex flex-col col-span-1 gap-7 sm:flex-row lg:flex-row md:flex-col mt-14"
   >
-    <div class="w-full h-40 rounded-lg bg-slate-950"></div>
-    <div class="w-full h-40 bg-blue-500 rounded-lg"></div>
-    <div class="w-full h-40 rounded-lg bg-slate-800"></div>
+    <div class="w-full h-40 rounded-lg bg-slate-800 flex flex-cols-2 gap-1 justify-between">
+     <div class="flex flex-col gap-1 p-10">
+      <p class="text-white font-bold "> Total Student Programs</p>
+      <p class="text-2xl text-white">{{students.length}}</p>
+
+     </div>
+
+     <div>
+        <img src="images/student.gif" alt="" class="rounded-l-3xl mt-7" style="width: 100px; height: 100px;">
+     </div>
+
+    </div>
+    <div class="w-full h-40 rounded-lg bg-blue-600 flex flex-cols-2 gap-1 justify-between">
+      <div class="flex flex-col gap-1 p-10">
+       <p class="text-white font-bold "> Total Instructors</p>
+       <p class="text-2xl text-white">{{instructors.length}}</p>
+
+      </div>
+
+      <div>
+         <img src="images/press-conference.gif" alt="" class="rounded-l-3xl mt-7" style="width: 100px; height: 100px;">
+      </div>
+
+     </div>
+     <div class="w-full h-40 rounded-lg bg-slate-800 flex flex-cols-2 gap-1 justify-between">
+      <div class="flex flex-col gap-1 p-10">
+       <p class="text-white font-bold "> Total Courses</p>
+       <p class="text-2xl text-white">{{course_list.length}}</p>
+
+      </div>
+
+      <div>
+         <img src="images/book.gif" alt="" class="rounded-l-3xl mt-7" style="width: 100px; height: 100px;">
+      </div>
+
+     </div>
+  </div>
+
+  <div class="w-full h-80 bg-gray-200 mt-10 border border-gray-300 shadow-lg rounded-lg">
+    <h1 class="font-bold text-2xl p-2">Recent Activities</h1>
+
   </div>
 </div>

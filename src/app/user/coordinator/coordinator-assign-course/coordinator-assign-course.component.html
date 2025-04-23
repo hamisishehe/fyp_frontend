@@ -17,15 +17,7 @@
       <li class="font-medium text-blue-600 dark:text-white">Assign Course</li>
     </ol>
 
-    <button
-      (click)="openModal()"
-      class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
-    >
-      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 16 20">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm9-10v.4A3.6 3.6 0 0 1 8.4 9H6.61A3.6 3.6 0 0 0 3 12.605M14.458 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
-      </svg>
-      Add Course
-    </button>
+
   </nav>
 
   <!-- Assign Course Form -->
@@ -78,7 +70,7 @@
           [(ngModel)]="student_id"
           [multiple]="true"
           [trackByFn]="trackById"
-          placeholder="Select a Student"
+          placeholder="Select a Students"
           [searchable]="true"
           name="student_id"
           id="student_name"
@@ -150,49 +142,16 @@
             </span>
         </th>
 
-      <th>
-        <span class="flex items-center">
-          Actions
-            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-            </svg>
-        </span>
-    </th>
-
           </tr>
       </thead>
       <tbody class="bg-white">
 
-        <tr *ngFor="let item of asignCourseResult">
-             <td class="font-bold">{{item.course_matrix_id}}</td>
+        <tr *ngFor="let item of asignCourseResult; let i = index">
+             <td class="font-bold">{{i+1}}</td>
              <td class="font-bold">{{item.course.name}}</td>
              <td class="font-bold">{{item.course.code}}</td>
-             <td class="font-bold">{{item.student.programme }}</td>
+             <td class="font-bold">{{item.studentProgrammes}}</td>
              <td class="font-bold">{{item.instructor.name}}</td>
-             <td>
-              <div class="grid grid-cols-3 gap-1">
-                <a href="http://">
-                  <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
-                    <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                  </svg>
-                </a>
-
-                <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
-                </svg>
-
-                <svg class="w-6 h-6 text-red-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
-                </svg>
-
-
-              </div>
-
-
-
-             </td>
-
 
 
         </tr>

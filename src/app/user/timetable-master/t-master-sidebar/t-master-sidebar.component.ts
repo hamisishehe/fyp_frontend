@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-t-master-sidebar',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, RouterModule, HttpClientModule],
   templateUrl: './t-master-sidebar.component.html',
   styleUrl: './t-master-sidebar.component.css',
 })

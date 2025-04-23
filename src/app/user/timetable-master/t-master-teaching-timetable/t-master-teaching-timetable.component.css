@@ -1,0 +1,63 @@
+/* Container for the timetable to center it */
+.timetable-container {
+  max-width: 100%;
+  margin: 20px auto;
+  overflow-x: auto;
+}
+
+/* Table styling */
+.timetable {
+  width: 100%;
+  border-collapse: collapse; /* Collapses borders */
+  margin: 10px 0;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visual appeal */
+}
+
+/* Table header */
+.timetable thead {
+  background-color: #0c0342;
+  color: white;
+  text-align: left;
+}
+
+.timetable th {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+/* Table body */
+.timetable tbody tr {
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+
+.timetable tbody tr:hover {
+  background-color: #f1f1f1; /* Slight hover effect */
+}
+
+/* Table cells */
+.timetable td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 13px;
+}
+
+/* Drag-and-drop rows */
+.cdk-drag-preview {
+  background-color: #ffeb3b;
+  border: 2px solid #000;
+}
+
+.cdk-drag-placeholder {
+  background-color: #e0e0e0;
+  border: 1px dashed #000;
+}
+
+/* Optional: Styling for groups list to make it look neat */
+.timetable td:last-child {
+  font-style: italic;
+  color: #555;
+}

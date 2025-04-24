@@ -20,10 +20,8 @@
     </ol>
     <div class="flex flex-row gap-2">
       <button (click)="generatePDF()" class="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700">
-        <svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm9-10v.4A3.6 3.6 0 0 1 8.4 9H6.61A3.6 3.6 0 0 0 3 12.605M14.458 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
-        </svg>
-        Print TimeTable
+        <img src="images/pdf.png" style="width: 25px; height: 25px;" alt="" srcset="">
+        Print
         <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
         </svg>
@@ -39,7 +37,7 @@
   </nav>
 
 
-  <div class="w-full h-full mt-14">
+  <div class="w-full h-full mt-10">
 
   <!-- timetable.component.html -->
   <div class="w-full timetable" id="timetable" cdkDropList [cdkDropListData]="timetable" (cdkDropListDropped)="onDrop($event)">
@@ -49,7 +47,7 @@
           <th>Day</th>
           <th>Time</th>
           <th>Course</th>
-          <th>Groups</th>
+          <th>Students</th>
           <th>Instructor</th>
           <th>Venue</th>
         </tr>

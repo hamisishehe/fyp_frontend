@@ -1,10 +1,11 @@
 export interface Session {
   day: string;
   time: string;
-  Course: string;
+  course_code: string;
   groups: string[];
   instructor: string;
-  Venue: string;
+  venue: string;
+  session_type:string;
 }
 
 export interface TimetableResponse {

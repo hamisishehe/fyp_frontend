@@ -85,15 +85,16 @@ export class CoordinatorCourseComponent {
       course_code: this.course_code,
       course_name: this.course_name,
       semester: this.semester,
-
-      time_difference: this.time_difference,
+      is_tutorial : 1,
+      is_lecture : 1,
+      time_difference: 3,
       coordinator_id: this.Coordinator_id  // make sure this is set
     };
 
     const headers = { 'Content-Type': 'application/json' };
 
 
-    this.http.post(`${environment}/add_new_course`, form_data,  { headers })
+    this.http.post(`${environment.baseUrl}/add_new_course`, form_data,  { headers })
       .subscribe(
         response => {
           Swal.fire({

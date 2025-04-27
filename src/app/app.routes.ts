@@ -17,6 +17,7 @@ import { CoordinatorProfileComponent } from './user/coordinator/coordinator-prof
 import { CoordinatorSettingsComponent } from './user/coordinator/coordinator-settings/coordinator-settings.component';
 import { CoordinatorInstructorsComponent } from './user/coordinator/coordinator-instructors/coordinator-instructors.component';
 import { CoordinatorAssignCourseComponent } from './user/coordinator/coordinator-assign-course/coordinator-assign-course.component';
+import { AdminLayoutComponent } from './user/admin/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -34,7 +35,7 @@ export const routes: Routes = [
         canActivate: [authGuardGuard],
       },
       {
-        path: 'user/timetable-master/ue',
+        path: 'user/timetable-master/examination',
         component: TMasterUeTimetableComponent,
         canActivate: [authGuardGuard],
       },
@@ -108,8 +109,24 @@ export const routes: Routes = [
     ],
   },
 
-
   //end routes for Coordinator
+
+
+  //router for admin
+  {
+    path: '',
+    component: AdminLayoutComponent,
+    canActivate: [authGuardGuard],
+    children: [
+      {
+        path: 'user/admin/dashboard',
+        component: TMasterDashboardComponent,
+        canActivate: [authGuardGuard],
+      },
+
+    ],
+  },
+  //end admin router
 
   // Default redirect for empty path
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },

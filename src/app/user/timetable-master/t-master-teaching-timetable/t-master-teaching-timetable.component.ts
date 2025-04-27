@@ -31,6 +31,12 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     this.fetchTimetable();
   }
 
+
+
+  GenerateTimeTable(){
+
+  }
+
   // Fetch timetable from backend
   fetchTimetable(): void {
     const apiUrl = 'http://localhost:5000/api/generate-timetable'; // Your Flask endpoint
@@ -39,7 +45,8 @@ export class TMasterTeachingTimetableComponent implements OnInit {
       (response) => {
         if (response.status === 'success') {
           this.timetable = response.data;  // Extract timetable data
-          console.log(this.timetable);  // Log the fetched timetable
+          console.log(response);  // Log the fetched timetable
+
         } else {
           console.error('Failed to fetch timetable:', response.message);
         }
@@ -96,9 +103,9 @@ export class TMasterTeachingTimetableComponent implements OnInit {
       y += 8;
       centerText("COLLEGE OF INFORMATICS AND VIRTUAL EDUCATION", y);
       y += 8;
-      centerText(`UNIVERSITY TEACHING TIMETABLE [${this.draftNumber}]`, y);
+      centerText(`UNIVERSITY TEACHING TIMETABLE`, y);
       y += 8;
-      centerText("SEMESTER TWO 2024/2025", y);
+      centerText("SEMESTER ONE 2024/2025", y);
       y += 10;
 
 
@@ -115,10 +122,10 @@ export class TMasterTeachingTimetableComponent implements OnInit {
         const sessionData: string[] = [
           session.day,
           session.time,
-          session.Course,
+          `${session.course_code} - (${session.session_type})`,
           session.groups.join(', '),
           session.instructor,
-          session.Venue
+          session.venue
         ];
         tableRows.push(sessionData);
       });
@@ -171,10 +178,10 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     if (event.previousIndex === event.currentIndex) return;
 
     // Swap only the specified fields
-    [prev.Course, curr.Course] = [curr.Course, prev.Course];
+    [prev.course_code, curr.course_code] = [curr.course_code, prev.course_code];
     [prev.groups, curr.groups] = [curr.groups, prev.groups];
     [prev.instructor, curr.instructor] = [curr.instructor, prev.instructor];
-    [prev.Venue, curr.Venue] = [curr.Venue, prev.Venue];
+    [prev.venue, curr.venue] = [curr.venue, prev.venue];
   }
 
   // Update the timetable by sending the modified timetable back to the backend

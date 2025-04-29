@@ -39,7 +39,11 @@
 
   <div class="w-full h-full mt-10">
 
-  <!-- timetable.component.html -->
+
+
+  <p class="font-bold">Last generated Teaching Timetable</p>
+  <br>
+
   <div class="w-full timetable" id="timetable" cdkDropList [cdkDropListData]="timetable" (cdkDropListDropped)="onDrop($event)">
     <table style="width: 100%;">
       <thead>

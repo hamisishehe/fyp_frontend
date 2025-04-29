@@ -8,6 +8,7 @@ import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { Session, TimetableResponse } from '../../../Models/timetableModel';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -28,24 +29,20 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.fetchTimetable();
+    this.getLastTimetable();
   }
 
 
 
-  GenerateTimeTable(){
 
-  }
-
-  // Fetch timetable from backend
   fetchTimetable(): void {
-    const apiUrl = 'http://localhost:5000/api/generate-timetable'; // Your Flask endpoint
+    const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
 
     this.http.post<TimetableResponse>(apiUrl, {}).subscribe(
       (response) => {
         if (response.status === 'success') {
-          this.timetable = response.data;  // Extract timetable data
-          console.log(response);  // Log the fetched timetable
+          this.timetable = response.data;
+          console.log(response);
 
         } else {
           console.error('Failed to fetch timetable:', response.message);
@@ -59,16 +56,12 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
 
   getLastTimetable(): void {
-    const apiUrl = 'http://localhost:5000/api/last-timetable'; // Your Flask endpoint
+    const apiUrl = `${environment.baseUrl}/api/fetch-timetable-json`;
 
-    this.http.get<any>(apiUrl).subscribe(
+    this.http.get<TimetableResponse>(apiUrl).subscribe(
       (response) => {
-        if (response.status === 'success') {
-          this.timetable = response;  // Extract timetable data
-          console.log(this.timetable);  // Log the fetched timetable
-        } else {
-          console.error('Failed to fetch timetable:', response.message);
-        }
+        this.timetable = response.data;
+        console.log(this.timetable);
       },
       (error) => {
         console.error('Error fetching timetable:', error);
@@ -77,8 +70,53 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   }
 
 
+  GenerateTimeTable(){
 
-  generatePDF() {
+    const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
+
+    this.http.post<TimetableResponse>(apiUrl, {}).subscribe(
+      (response) => {
+        if (response.status === 'success') {
+          console.log(response);
+         this.timetable = response.data;
+        } else {
+          console.error('Failed to fetch timetable:', response.message);
+        }
+      },
+      (error) => {
+        console.error('Error fetching timetable:', error);
+      }
+    );
+
+
+  }
+
+
+  generatePDF(){
+
+
+    const apiUrl = `${environment.baseUrl}/api/save-timetable-json`;
+
+    const payload = {
+      status: 'success',
+      message: 'Timetable generated successfully.',
+      data: this.timetable
+    };
+
+    this.http.post(apiUrl, payload).subscribe(
+      (response) => {
+        console.log('Timetable saved successfully:', response);
+        this.createPDF();  // You can keep this logic
+      },
+      (error) => {
+        console.error('Error saving timetable:', error);
+      }
+    );
+
+  }
+
+  createPDF() {
+
     const pdf = new jsPDF();
     const img = new Image();
     img.src = 'images/logo.png';
@@ -163,8 +201,6 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
         }
       });
-
-
 
       pdf.save('timetable.pdf');
     };

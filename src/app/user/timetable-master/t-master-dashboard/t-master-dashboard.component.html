@@ -70,33 +70,11 @@
        </div>
     </div>
 
-    <div class="w-full h-full mt-10 bg-gray-200 border border-gray-300 rounded-lg shadow-lg">
-      <h1 class="p-6 text-xl font-bold text-gray-400">Recent Activities</h1>
+    <div class="w-full mt-10 bg-gray-200 border border-gray-300 rounded-lg shadow-lg h-52">
 
-
-      <div class="w-full h-full m-6 bg-gray-200">
-
-
-        <ol class="relative border-s border-slate-800 dark:border-gray-700">
-          <li *ngFor="let activity of activities" class="mb-10 ms-4">
-            <div class="absolute w-3 h-3 bg-blue-800 rounded-full mt-1.5 -start-1.5 border border-white"></div>
-            <time class="mb-1 text-sm font-normal leading-none text-gray-400">{{ activity.time | date:'medium' }}</time>
-
-            <div *ngIf=" activity.path =='/user/timetable-master/dashboard'">
-              <h3 class="text-lg font-semibold text-gray-900" >Visited: Dashboard </h3>
-            </div>
-
-            <div *ngIf=" activity.path =='/user/timetable-master/teaching'">
-              <h3 class="text-lg font-semibold text-gray-900" >Visited: Teaching Timetable </h3>
-            </div>
-
-          </li>
-        </ol>
-
-
-
-      </div>
 
 
     </div>
+
+
   </div>

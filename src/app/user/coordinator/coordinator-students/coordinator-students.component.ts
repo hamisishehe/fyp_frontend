@@ -20,6 +20,10 @@ export class CoordinatorStudentsComponent implements OnInit{
   isUploadOpen=false;
   isLoading: boolean = true;
 
+isUpdateModalOpen = false;
+selectedStudent: any = {};  // will store student info for editing
+
+
   userData : UserDetails | null = null;
   students: StudentData [] = [];
 
@@ -217,6 +221,31 @@ UploadExcelFile(file: File) {
     );
 }
 
+updateStudentProgram() {
+  const payload = {
+    id: this.selectedStudent.id,
+    programme: this.selectedStudent.programme,
+    total_students: this.selectedStudent.total_students,
+    coordinator_id: this.selectedStudent.coordinator_id
+  };
+
+  this.isLoading = true;
+
+  this.http.put('/update_student_program', payload).subscribe({
+    next: (res) => {
+      console.log('Update successful', res);
+      this.isLoading = false;
+      this.isUpdateModalOpen = false;
+      // You can refresh your student list here if needed
+      this.GetStudents();
+    },
+    error: (err) => {
+      console.error('Update failed', err);
+      this.isLoading = false;
+    }
+  });
+}
+
   openModal() {
     this.isOpen = true;
   }
@@ -235,6 +264,19 @@ UploadExcelFile(file: File) {
     this.isUploadOpen = false;
   }
 
+
+  openUpdateModal(id: number) {
+    this.isOpen = true;
+
+    console.log('Opening modal for ID:', id);
+    // Your logic to open modal here
+  }
+
+
+  closeUpdateModal() {
+    this.isUpdateModalOpen = false;
+    this.selectedStudent = {};
+  }
 
 
 

@@ -111,9 +111,15 @@
 
          <td>
           <div>
-            <svg class="w-6 h-6 text-slate-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-              <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
-            </svg>
+
+            <button (click)="openUpdateModal(item.id)" class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+              <svg class="w-6 h-6 text-slate-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
           </div>
 
 
@@ -127,6 +133,7 @@
 </table>
 
 </div>
+
 
 
 
@@ -146,8 +153,6 @@
 
          <div class="p-3 ">
             <form (ngSubmit)="Insert_Student()" #Studentform="ngForm">
-
-
 
               <div class="mt-4">
                 <label
@@ -251,6 +256,38 @@
 
   </div>
 </div>
+
+
+
+<!-- Update Student Program Modal -->
+<div *ngIf="isUpdateModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div class="w-full max-w-md p-6 bg-white rounded-lg dark:bg-gray-800">
+    <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white">Update Student Program</h2>
+
+    <form (submit)="updateStudentProgram()">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Program Name</label>
+        <input [(ngModel)]="selectedStudent.programme" name="programme" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:text-white" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Total Students</label>
+        <input [(ngModel)]="selectedStudent.total_students" name="total_students" type="number" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:text-white" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Coordinator ID</label>
+        <input [(ngModel)]="selectedStudent.coordinator_id" name="coordinator_id" type="number" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:text-white" required>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <button type="button" (click)="closeUpdateModal()" class="px-4 py-2 text-gray-700 bg-gray-300 rounded hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
  </div>

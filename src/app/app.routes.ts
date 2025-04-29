@@ -18,6 +18,8 @@ import { CoordinatorSettingsComponent } from './user/coordinator/coordinator-set
 import { CoordinatorInstructorsComponent } from './user/coordinator/coordinator-instructors/coordinator-instructors.component';
 import { CoordinatorAssignCourseComponent } from './user/coordinator/coordinator-assign-course/coordinator-assign-course.component';
 import { AdminLayoutComponent } from './user/admin/admin-layout/admin-layout.component';
+import { TMasterSidebarComponent } from './user/timetable-master/t-master-sidebar/t-master-sidebar.component';
+import { TMasterHeaderComponent } from './user/timetable-master/t-master-header/t-master-header.component';
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -59,6 +61,7 @@ export const routes: Routes = [
         component: TMasterFilesComponent,
         canActivate: [authGuardGuard],
       },
+
     ],
   },
   //end routes for timetable master

@@ -1,1 +1,82 @@
-<p>dashboard works!</p>
+<div class="w-full min-h-screen p-8 rounded-lg mt-28 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
+
+  <!-- Breadcrumb -->
+  <nav class="flex items-center justify-between px-6 py-4 mb-10 bg-white border border-gray-300 shadow-md rounded-xl">
+    <ol class="inline-flex items-center space-x-2 text-sm text-gray-700">
+      <li><a href="#" class="hover:text-blue-600">Home</a></li>
+      <li>
+        <svg class="w-4 h-4 mx-1 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9L5 5L1 1" />
+        </svg>
+      </li>
+      <li class="font-semibold text-blue-600">Dashboard</li>
+    </ol>
+  </nav>
+
+  <!-- Dashboard Cards -->
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Students -->
+    <div class="relative p-6 overflow-hidden text-white transition shadow-lg bg-slate-800 rounded-2xl hover:shadow-xl hover:scale-105">
+      <div class="relative z-10">
+        <h3 class="text-xl font-bold">Total Student Programs</h3>
+        <p class="mt-2 text-4xl font-extrabold">{{students.length}}</p>
+      </div>
+      <img src="images/student.gif" alt="Students" class="absolute w-24 h-24 bottom-2 right-2 opacity-90">
+    </div>
+
+    <!-- Instructors -->
+    <div class="relative p-6 overflow-hidden text-white transition shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl hover:shadow-xl hover:scale-105">
+      <div class="relative z-10">
+        <h3 class="text-xl font-bold">Total Instructors</h3>
+        <p class="mt-2 text-4xl font-extrabold">{{instructors.length}}</p>
+      </div>
+      <img src="images/press-conference.gif" alt="Instructors" class="absolute w-24 h-24 bottom-2 right-2 opacity-90">
+    </div>
+
+    <!-- Courses -->
+    <div class="relative p-6 overflow-hidden text-white transition shadow-lg bg-slate-800 rounded-2xl hover:shadow-xl hover:scale-105">
+      <div class="relative z-10">
+        <h3 class="text-xl font-bold">Total Courses</h3>
+        <p class="mt-2 text-4xl font-extrabold">{{course_list.length}}</p>
+      </div>
+      <img src="images/book.gif" alt="Courses" class="absolute w-24 h-24 bottom-2 right-2 opacity-90">
+    </div>
+  </div>
+
+  <!-- Latest Registered Users -->
+  <div class="p-8 mt-16 bg-white border border-gray-200 shadow-lg rounded-2xl">
+    <h2 class="mb-6 text-2xl font-semibold text-gray-800">👥 Latest Registered Users</h2>
+    <ul class="space-y-4">
+      <li class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="https://i.pravatar.cc/40?img=1" alt="User" class="w-10 h-10 rounded-full">
+          <div>
+            <p class="font-medium text-gray-800">Alice Johnson</p>
+            <p class="text-sm text-gray-500">Instructor - Joined 2 days ago</p>
+          </div>
+        </div>
+        <span class="px-2 py-1 text-sm text-green-600 bg-green-100 rounded-full">Active</span>
+      </li>
+      <li class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="https://i.pravatar.cc/40?img=2" alt="User" class="w-10 h-10 rounded-full">
+          <div>
+            <p class="font-medium text-gray-800">Mark Smith</p>
+            <p class="text-sm text-gray-500">Student - Joined 3 days ago</p>
+          </div>
+        </div>
+        <span class="px-2 py-1 text-sm text-yellow-600 bg-yellow-100 rounded-full">Pending</span>
+      </li>
+      <li class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="https://i.pravatar.cc/40?img=3" alt="User" class="w-10 h-10 rounded-full">
+          <div>
+            <p class="font-medium text-gray-800">Sarah Lee</p>
+            <p class="text-sm text-gray-500">Instructor - Joined 1 week ago</p>
+          </div>
+        </div>
+        <span class="px-2 py-1 text-sm text-blue-600 bg-blue-100 rounded-full">Verified</span>
+      </li>
+    </ul>
+  </div>
+</div>

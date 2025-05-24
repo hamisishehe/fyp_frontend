@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { BrowserModule } from '@angular/platform-browser';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';

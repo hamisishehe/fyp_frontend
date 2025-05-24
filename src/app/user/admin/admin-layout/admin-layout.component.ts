@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
+import { AdminFooterComponent } from "../admin-footer/admin-footer.component";
+import { AdminHeaderComponent } from "../admin-header/admin-header.component";
+import { AdminSidebarComponent } from "../admin-sidebar/admin-sidebar.component";
 
 @Component({
   selector: 'app-admin-layout',
-  imports: [HttpClientModule, CommonModule],
+  imports: [HttpClientModule, CommonModule, AdminFooterComponent, AdminHeaderComponent, AdminSidebarComponent,RouterOutlet],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'
 })

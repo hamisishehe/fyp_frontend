@@ -4,6 +4,6 @@ export interface Venue {
   location: string;
   exam_capacity: number;
   teaching_capacity: number;
-  type: 'CLASS' | 'LAB' | 'HALL'; // adjust based on your VenueType enum
+  type: 'CLASS' | 'LAB' | 'HALL';
   coordinator_id: number;
 }

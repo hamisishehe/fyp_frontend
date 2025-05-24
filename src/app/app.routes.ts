@@ -20,6 +20,12 @@ import { CoordinatorAssignCourseComponent } from './user/coordinator/coordinator
 import { AdminLayoutComponent } from './user/admin/admin-layout/admin-layout.component';
 import { TMasterSidebarComponent } from './user/timetable-master/t-master-sidebar/t-master-sidebar.component';
 import { TMasterHeaderComponent } from './user/timetable-master/t-master-header/t-master-header.component';
+import { UsersComponent } from './user/admin/users/users.component';
+import { CollageComponent } from './user/admin/collage/collage.component';
+import { ProfileComponent } from './user/admin/profile/profile.component';
+import { DashboardComponent } from './user/admin/dashboard/dashboard.component';
+import { DepartmentComponent } from './user/admin/department/department.component';
+import { VenueComponent } from './user/admin/venue/venue.component';
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -123,7 +129,36 @@ export const routes: Routes = [
     children: [
       {
         path: 'user/admin/dashboard',
-        component: TMasterDashboardComponent,
+        component: DashboardComponent,
+        canActivate: [authGuardGuard],
+      },
+
+      {
+        path: 'user/admin/usermanagement',
+        component: UsersComponent,
+        canActivate: [authGuardGuard],
+      },
+
+      {
+        path: 'user/admin/collagemanagement',
+        component: CollageComponent,
+        canActivate: [authGuardGuard],
+      },
+
+        {
+        path: 'user/admin/department',
+        component: DepartmentComponent,
+        canActivate: [authGuardGuard],
+      },
+        {
+        path: 'user/admin/venue',
+        component: VenueComponent,
+        canActivate: [authGuardGuard],
+      },
+
+      {
+        path: 'user/admin/profile',
+        component: ProfileComponent,
         canActivate: [authGuardGuard],
       },
 

@@ -17,7 +17,7 @@ import { CollageModel } from '../../../Models/collageModel';
 })
 export class VenueComponent implements OnInit{
 
-      isOpen = false;
+    isOpen = false;
     isUploadOpen=false;
     isLoading: boolean = true;
 
@@ -192,6 +192,54 @@ GetVenue(){
 }
 
 
+
+editIndex: number | null = null;
+
+originalVenue: any = {}; // Backup for canceling
+
+cancelEdit() {
+  if (this.editIndex !== null) {
+    this.venue[this.editIndex] = { ...this.originalVenue };
+    this.editIndex = null;
+  }
+}
+
+openUpdateModal(index: number) {
+  this.editIndex = index;
+  this.originalVenue = { ...this.venue[index] };
+}
+
+updateVenue(item: any) {
+  this.http.put(`${environment.baseUrl}/update_venue/${item.id}`, {
+    name: item.name,
+    location: item.location,
+    exam_capacity: item.teaching_capacity / 2, // optionally handle this too
+    teaching_capacity: item.teaching_capacity,
+    type: item.type
+  }).subscribe({
+    next: (res) => {
+      Swal.fire({
+              icon: 'success',
+              title: 'venue Updated',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+      console.log('Updated:', res);
+      this.editIndex = null;
+    },
+    error: (err) => {
+      Swal.fire({
+              icon: 'error',
+              title: err,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+      console.error('Update error:', err);
+    }
+  });
+}
+
+
     openModal() {
       this.isOpen = true;
     }
@@ -209,15 +257,6 @@ GetVenue(){
     closeUploadModal() {
       this.isUploadOpen = false;
     }
-
-
-    openUpdateModal(id: number) {
-      this.isOpen = true;
-
-      console.log('Opening modal for ID:', id);
-      // Your logic to open modal here
-    }
-
 
 
 

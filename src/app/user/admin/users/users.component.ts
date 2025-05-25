@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { DataTable } from 'simple-datatables';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DepartmentModel } from '../../../Models/departmentModel';
 
 @Component({
   selector: 'app-users',
@@ -20,7 +21,9 @@ export class UsersComponent implements OnInit {
   isOpen = false;
 
   userData : UserDetails | null = null;
-  instructors: InstructorData [] = [];
+  users: UserDetails [] = [];
+  department: DepartmentModel [] = [];
+  isLoading: boolean = true;
 
 
   Coordinator_id : number = 0;
@@ -30,7 +33,7 @@ export class UsersComponent implements OnInit {
   phone_number : string='';
   email : string='';
   role : string='';
-  department : string='';
+  add_department : string='';
 
 
   constructor(private http : HttpClient ){
@@ -40,8 +43,14 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
 
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 100);
+
+
     this.getProfile();
-    this.GetInstructors();
+    this.GetDepartment();
+    this.GetUsers();
   }
 
 
@@ -80,7 +89,7 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  Insert_NewInstructor(){
+  Insert_User(){
 
     console.log("................")
 
@@ -90,19 +99,21 @@ export class UsersComponent implements OnInit {
       last_name: this.last_name,
       phone_number: this.phone_number,
       email: this.email,
-      title: this.department,
-      coordinator_id: this.Coordinator_id  // make sure this is set
+      department: this.add_department,
+      role:this.role
     };
+
+    console.log(form_data);
 
     const headers = { 'Content-Type': 'application/json' };
 
 
-    this.http.post(`http://127.0.0.1:5000/add_instructor`, form_data,  { headers })
+    this.http.post(`${environment.baseUrl}/add_user`, form_data,  { headers })
       .subscribe(
         response => {
           Swal.fire({
             icon: 'success',
-            title: 'Instructor added',
+            title: 'User added',
             showConfirmButton: false,
             timer: 1500,
           });
@@ -126,16 +137,16 @@ export class UsersComponent implements OnInit {
 
 
 
-GetInstructors(){
+GetUsers(){
 
   console.log("................")
 
-  this.http.get<InstructorData[]>(`http://127.0.0.1:5000/instructors`)
+  this.http.get<UserDetails[]>(`${environment.baseUrl}/view_users`)
     .subscribe(
       response => {
 
-        this.instructors = response;
-        console.log(this.instructors);
+        this.users = response;
+        console.log(this.users);
         this.initializeTable();
 
       },
@@ -146,6 +157,29 @@ GetInstructors(){
       }
     );
 }
+
+
+
+  GetDepartment(){
+
+    console.log("................")
+
+    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
+      .subscribe(
+        response => {
+
+          this.department = response;
+          console.log(this.department);
+          this.initializeTable();
+
+        },
+        error => {
+
+
+          console.log(error);
+        }
+      );
+  }
 
 
 

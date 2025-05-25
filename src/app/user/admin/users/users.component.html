@@ -1,7 +1,14 @@
-<div class="w-full h-full mt-24">
+<div class="w-full min-h-screen mt-24 ">
 
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="flex items-center justify-center h-64">
+    <svg class="w-12 h-12 text-blue-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-label="Loading">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>
+  </div>
 
-
+  <div *ngIf="!isLoading" class="space-y-6">
   <!-- Breadcrumb -->
   <nav class="justify-between px-4 py-3 mt-16 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
     <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-2 rtl:space-x-reverse sm:mb-0">
@@ -15,13 +22,13 @@
           <svg class="w-3 h-3 mx-1 text-gray-400 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
           </svg>
-          <a href="#" class="text-sm font-medium text-gray-700 ms-1 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Instructors</a>
+          <a href="#" class="text-sm font-medium text-gray-700 ms-1 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">User</a>
         </div>
       </li>
 
     </ol>
     <div>
-      <button (click)="openModal()"  class="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+      <button (click)="openModal()"  class="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-blue-400 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"><svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm9-10v.4A3.6 3.6 0 0 1 8.4 9H6.61A3.6 3.6 0 0 0 3 12.605M14.458 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
     </svg>New User<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -92,6 +99,24 @@
       </span>
   </th>
 
+  <th>
+        <span class="flex items-center">
+          Role
+            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+            </svg>
+        </span>
+    </th>
+
+    <th>
+        <span class="flex items-center">
+          Department
+            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+            </svg>
+        </span>
+    </th>
+
   <!-- <th>
     <span class="flex items-center">
       Actions
@@ -105,13 +130,15 @@
   </thead>
   <tbody class="bg-white">
 
-    <tr *ngFor="let item of instructors">
+    <tr *ngFor="let item of users">
          <td class="font-bold">{{item.id}}</td>
          <td class="font-bold">{{item.first_name}}</td>
          <td class="font-bold">{{item.middle_name}}</td>
          <td class="font-bold">{{item.last_name}}</td>
          <td class="font-bold">{{item.email}}</td>
          <td class="font-bold">{{item.phone_number}}</td>
+         <td class="font-bold">     <span class="px-2 py-1 text-sm text-green-600 bg-green-100 rounded-full">{{item.role}}</span></td>
+          <td class="font-bold">{{item.department}}</td>
          <!-- <td>
           <div class="grid grid-cols-3 gap-1">
             <a href="http://">
@@ -165,7 +192,7 @@
       <div class="p-2 mt-20 bg-white rounded-lg shadow-lg " style="width: 500px;">
 
         <div class="grid justify-between grid-flow-col">
-          <h3 class="mt-2 font-semibold text-md">New Instructor</h3>
+          <h3 class="mt-2 font-semibold text-md">New User</h3>
           <div class="flex justify-end ">
             <button (click)="closeModal()" class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">
               Close
@@ -175,30 +202,53 @@
 
 
          <div class="p-3 ">
-            <form (ngSubmit)="Insert_NewInstructor()" #Instructorform="ngForm">
+            <form (ngSubmit)="Insert_User()" #Userform="ngForm">
 
               <div class="mt-4">
                 <label
-                  for="first_name"
+                  for="department"
                   class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-                  >Title</label
+                  >Department</label
                 >
 
                 <select
-                id="title"
-                name="title"
-                [(ngModel)]="department"
+                id="department"
+                name="add_department"
+                [(ngModel)]="add_department"
+                #v_dep="ngModel"
                 class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                 required
                 >
-                <option value="">Select</option>
-                <option value="Prof">Prof</option>
-                <option value="Dr">Dr</option>
-                <option value="Mr">Mr</option>
-                <option value="Mrs">Mrs</option>
+                <option *ngFor="let item of department" value="{{item.short_name}}">{{item.collage.short_name}} | {{item.name}}</option>
+
                 </select>
                 <div
-                  *ngIf="v_firstname.invalid && v_firstname.touched"
+                  *ngIf="v_dep.invalid && v_dep.touched"
+                  class="mt-1 text-sm text-red-600"
+                ></div>
+              </div>
+
+                <div class="mt-4">
+                <label
+                  for="role"
+                  class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+                  >Role</label
+                >
+
+                <select
+                id="role"
+                name="role"
+                [(ngModel)]="role"
+                #v_role="ngModel"
+                class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
+                required
+                >
+               <option value="COORDINATOR">COORDINATOR</option>
+                <option value="ADMIN">ADMIN</option>
+                 <option value="TIMETABLEMASTER">TIMETABLEMASTER</option>
+                </select>
+                <div
+                  *ngIf="v_role.invalid && v_role.touched"
                   class="mt-1 text-sm text-red-600"
                 ></div>
               </div>
@@ -333,7 +383,7 @@
 
 
               <button
-              [disabled]="!Instructorform.valid"
+              [disabled]="!Userform.valid"
               class="w-full py-2 mt-4 text-white rounded-lg bg-slate-900"
             >
              Submit
@@ -350,4 +400,5 @@
     </div>
 
 
+</div>
 </div>

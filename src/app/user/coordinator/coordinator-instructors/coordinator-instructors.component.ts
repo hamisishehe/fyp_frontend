@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { UserDetails } from '../../../Models/userModel';
 import Swal from 'sweetalert2'
 import { InstructorData } from '../../../Models/InstructorModel';
+import { DepartmentModel } from '../../../Models/departmentModel';
 
 @Component({
   selector: 'app-coordinator-instructors',
@@ -20,15 +21,18 @@ export class CoordinatorInstructorsComponent implements OnInit{
 
   userData : UserDetails | null = null;
   instructors: InstructorData [] = [];
+  department: DepartmentModel [] = [];
 
 
   Coordinator_id : number = 0;
   first_name : string='';
   middle_name : string='';
   last_name : string='';
+  gender:string='';
   phone_number : string='';
   email : string='';
   title : string='';
+  department_id:number=0;
 
 
   constructor(private http : HttpClient ){
@@ -39,6 +43,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
   ngOnInit() {
 
     this.getProfile();
+    this.GetDepartment();
     this.GetInstructors();
   }
 
@@ -86,16 +91,20 @@ export class CoordinatorInstructorsComponent implements OnInit{
       first_name: this.first_name,
       middle_name: this.middle_name,
       last_name: this.last_name,
+      gender:this.gender,
       phone_number: this.phone_number,
       email: this.email,
       title: this.title,
-      coordinator_id: this.Coordinator_id  // make sure this is set
+      coordinator_id: this.Coordinator_id,
+      department_id:this.department_id // make sure this is set
     };
+
+    console.log(form_data);
 
     const headers = { 'Content-Type': 'application/json' };
 
 
-    this.http.post(`http://127.0.0.1:5000/add_instructor`, form_data,  { headers })
+    this.http.post(`${environment.baseUrl}/add_instructor`, form_data,  { headers })
       .subscribe(
         response => {
           Swal.fire({
@@ -112,7 +121,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
 
           Swal.fire({
             icon: "error",
-            title: "Oops...",
+            title: error,
             text: error,
             timer: 1500,
           });
@@ -121,6 +130,28 @@ export class CoordinatorInstructorsComponent implements OnInit{
         }
       );
 }
+
+
+  GetDepartment(){
+
+    console.log("................")
+
+    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
+      .subscribe(
+        response => {
+
+          this.department = response;
+          console.log(this.department);
+          this.initializeTable();
+
+        },
+        error => {
+
+
+          console.log(error);
+        }
+      );
+  }
 
 
 

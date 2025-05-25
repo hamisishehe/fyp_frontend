@@ -179,7 +179,7 @@ GetVenue(){
       response => {
 
         this.venue = response;
-        console.log(this.venue);
+        console.log(response);
         this.initializeTable();
 
       },

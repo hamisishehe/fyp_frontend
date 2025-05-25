@@ -7,6 +7,7 @@ import { CourseData } from '../../../Models/CourseModel';
 import { environment } from '../../../environments/environment';
 import Swal from 'sweetalert2';
 import { DataTable } from 'simple-datatables';
+import { DepartmentModel } from '../../../Models/departmentModel';
 
 @Component({
   selector: 'app-coordinator-course',
@@ -15,19 +16,22 @@ import { DataTable } from 'simple-datatables';
   styleUrl: './coordinator-course.component.css'
 })
 export class CoordinatorCourseComponent {
+[x: string]: any;
   isOpen = false;
   isLoading: boolean = true;
   userData : UserDetails | null = null;
   course_list: CourseData [] = [];
+   department: DepartmentModel [] = [];
 
 
   Coordinator_id : number = 0;
   course_code : string='';
   course_name : string='';
-  is_tutorial : string='';
-  is_lecture : string='';
-  time_difference : string='';
+  is_tutorial : boolean = true;
+  is_lecture : boolean = true;
+  is_practical : boolean = false;
   semester : string='';
+  department_id:number=0;
 
 
   constructor(private http : HttpClient ){
@@ -39,6 +43,7 @@ export class CoordinatorCourseComponent {
 
     this.getProfile();
     this.GetCourse();
+    this.GetDepartment();
   }
 
 
@@ -85,11 +90,14 @@ export class CoordinatorCourseComponent {
       course_code: this.course_code,
       course_name: this.course_name,
       semester: this.semester,
-      is_tutorial : 1,
-      is_lecture : 1,
-      time_difference: 3,
-      coordinator_id: this.Coordinator_id  // make sure this is set
+      is_tutorial : this.is_tutorial,
+      is_lecture : this.is_lecture,
+      is_practical: this.is_practical,
+      coordinator_id: this.Coordinator_id,
+      department_id: this.department_id  // make sure this is set
     };
+
+    console.log(form_data);
 
     const headers = { 'Content-Type': 'application/json' };
 
@@ -111,7 +119,7 @@ export class CoordinatorCourseComponent {
 
           Swal.fire({
             icon: "error",
-            title: "Oops...",
+            title: error,
             text: error,
             timer: 1500,
           });
@@ -143,6 +151,28 @@ GetCourse(){
       }
     );
 }
+
+
+  GetDepartment(){
+
+    console.log("................")
+
+    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
+      .subscribe(
+        response => {
+
+          this.department = response;
+          console.log(this.department);
+          this.initializeTable();
+
+        },
+        error => {
+
+
+          console.log(error);
+        }
+      );
+  }
 
 
 

@@ -72,7 +72,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
             this.userData = data;
             this.Coordinator_id = this.userData.id;
 
-            console.log(this.userData.id);
+            console.log(this.userData);
           },
           (error) => {
             console.error('Error fetching user profile', error);

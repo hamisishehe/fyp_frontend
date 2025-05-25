@@ -108,27 +108,17 @@
   </tr>
 </thead>
 <tbody class="bg-white">
-
-<tr *ngFor="let item of course_list; let i = index">
-     <td class="font-bold">{{i + 1}}</td>
-     <td class="font-bold">{{item.course_code}}</td>
-     <td class="font-bold">{{item.course_name}}</td>
-     <td class="font-bold">{{item.semester}}</td>
-     <!-- <td>
-      <div>
-        <svg class="w-6 h-6 text-slate-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
-        </svg>
-      </div>
-
-
-
-     </td> -->
-
-</tr>
-
-
+  <ng-container *ngFor="let item of course_list; let i = index">
+    <tr *ngIf="item.department.short_name === userData?.department">
+      <td class="font-bold">{{ i + 1 }}</td>
+      <td class="font-bold">{{ item.course_code }}</td>
+      <td class="font-bold">{{ item.course_name }}</td>
+      <td class="font-bold">{{ item.semester }}</td>
+    </tr>
+  </ng-container>
 </tbody>
+
+
 </table>
 
 </div>
@@ -152,6 +142,33 @@
      <div class="p-3 ">
         <form (ngSubmit)="InsertNewCourse()" #Studentform="ngForm">
 
+
+             <div class="mt-4">
+                  <label
+                    for="department"
+                    class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+                    >Department</label
+                  >
+                   <select
+                id="departmen"
+                name="departmen"
+                [(ngModel)]="department_id"
+                #v_department="ngModel"
+                class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
+                required
+                >
+        <ng-container *ngFor="let item of department">
+  <option *ngIf="item.short_name === userData?.department" [value]="item.id">
+    {{item.collage.short_name}} | {{item.short_name}}
+  </option>
+</ng-container>
+
+                </select>
+                <div
+                  *ngIf="v_department.invalid && v_department.touched"
+                  class="mt-1 text-sm text-red-600"
+                ></div>
+                </div>
 
 
           <div class="mt-4">
@@ -205,15 +222,20 @@
               class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
               >Semester</label
             >
-            <input
-              [(ngModel)]="semester"
+
+            <select
+             [(ngModel)]="semester"
               #v_semester="ngModel"
               type="text"
               id="semester"
               name="semester"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-              required
-            />
+              required>
+              <option value="1">ONE</option>
+              <option value="2">TWO</option>
+
+            </select>
+
             <!-- Error message for course_code-->
             <div
               *ngIf="v_semester.invalid && v_semester.touched"
@@ -222,25 +244,21 @@
           </div>
 
 
-          <div class="mt-4">
-            <label
-              for="is_tutorial"
-              class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-              >Have Tutorial</label
-            >
-            <input
-              [(ngModel)]="is_tutorial"
-              type="checkbox"
-              id="is_tutorial"
-              name="is_tutorial"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-              required
-            />
-            <!-- Error message for course_code-->
-            <!-- <div
-              *ngIf="v_.invalid && v_semester.touched"
-              class="mt-1 text-sm text-red-600"
-            ></div> -->
+          <div class="mt-4 grid grid-flow-col gap-2 ">
+
+<div class="flex items-center ps-4 border border-gray-200 rounded-sm dark:border-gray-700 gap-2">
+    <input id="bordered-checkbox-1" type="checkbox"  [(ngModel)]="is_tutorial" checked disabled="" name="is_tutorial" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+    <label for="bordered-checkbox-1" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tutorial</label>
+</div>
+<div class="flex items-center ps-4 border border-gray-200 rounded-sm dark:border-gray-700">
+    <input checked id="bordered-checkbox-2" type="checkbox" [(ngModel)]="is_lecture" checked disabled="" name="is_lecture" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+    <label for="bordered-checkbox-2" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Lecture</label>
+</div>
+<div class="flex items-center ps-4 border border-gray-200 rounded-sm dark:border-gray-700">
+    <input checked id="bordered-checkbox-2" type="checkbox" [(ngModel)]="is_practical"  name="is_practical" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+    <label for="bordered-checkbox-2" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Practical</label>
+</div>
+
           </div>
 
 

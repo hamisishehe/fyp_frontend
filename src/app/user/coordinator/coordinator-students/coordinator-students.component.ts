@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import Swal from 'sweetalert2';
 import { DataTable } from 'simple-datatables';
+import { DepartmentModel } from '../../../Models/departmentModel';
 
 @Component({
   selector: 'app-coordinator-students',
@@ -26,12 +27,22 @@ selectedStudent: any = {};  // will store student info for editing
 
   userData : UserDetails | null = null;
   students: StudentData [] = [];
+  department: DepartmentModel [] = [];
+
 
 
   Coordinator_id : number = 0;
   programme : string='';
-  total_students : string='';
+  programme_code:string='';
+  duration : number = 0;
+  department_id: number =0;
+  user_dept : String='';
 
+
+editId: number | null = null;
+ editProgramme: string = '';
+ editCode: string = '';
+ editTotal: number = 0;
 
 
   constructor(private http : HttpClient ){
@@ -47,6 +58,7 @@ selectedStudent: any = {};  // will store student info for editing
 
     this.getProfile();
     this.GetStudents();
+    this.GetDepartment();
 
   }
 
@@ -88,14 +100,17 @@ selectedStudent: any = {};  // will store student info for editing
     }
   }
 
-  Insert_Student(){
+  Insert_Program(){
 
     console.log("................")
 
     const form_data = {
       programme: this.programme,
-      total_students: this.total_students,
-      coordinator_id: this.Coordinator_id  // make sure this is set
+      programme_code:this.programme_code,
+      duration: this.duration,
+      coordinator_id: this.Coordinator_id,  // make sure this is set
+      department_id:this.department_id
+
     };
 
     console.log(form_data);
@@ -103,12 +118,12 @@ selectedStudent: any = {};  // will store student info for editing
     const headers = { 'Content-Type': 'application/json' };
 
 
-    this.http.post(`http://127.0.0.1:5000/add_student_program`, form_data,  { headers })
+    this.http.post(`${environment.baseUrl}/add_student_program`, form_data,  { headers })
       .subscribe(
         response => {
           Swal.fire({
             icon: 'success',
-            title: 'Student added',
+            title: 'Program added',
             showConfirmButton: false,
             timer: 1500,
           });
@@ -120,7 +135,7 @@ selectedStudent: any = {};  // will store student info for editing
 
           Swal.fire({
             icon: "error",
-            title: "Oops...",
+            title: error,
             text: error,
             timer: 1500,
           });
@@ -143,14 +158,20 @@ onExcelSelected(event: any) {
 
 GetStudents(){
 
-  console.log("................")
+  console.log("................");
 
-  this.http.get<StudentData[]>(`http://127.0.0.1:5000/students`)
+  this.http.get<StudentData[]>(`${environment.baseUrl}/students`)
     .subscribe(
       response => {
 
+         console.log("................");
+
+        // if (this.user_dept == response) {
+
+        // }
+
         this.students = response;
-        console.log(this.students);
+        console.log(response);
         this.initializeTable();
 
       },
@@ -161,6 +182,28 @@ GetStudents(){
       }
     );
 }
+
+
+  GetDepartment(){
+
+    console.log("................")
+
+    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
+      .subscribe(
+        response => {
+
+          this.department = response;
+          console.log(this.department);
+          this.initializeTable();
+
+        },
+        error => {
+
+
+          console.log(error);
+        }
+      );
+  }
 
 
 
@@ -246,6 +289,42 @@ updateStudentProgram() {
   });
 }
 
+
+
+openUpdateModal(id: number) {
+  const student = this.students.find(s => s.id === id);
+  if (student) {
+    this.editId = id;
+    this.editProgramme = student.programme;
+    this.editCode = student.programme_code;
+    this.editTotal = student.total_students;
+  }
+}
+
+saveEdit() {
+  const updated = {
+    programme: this.editProgramme,
+    programme_code: this.editCode,
+    total_students: this.editTotal
+  };
+
+  this.http.patch(`${environment.baseUrl}/update_student_program/${this.editId}`, updated).subscribe({
+    next: () => {
+      // Refresh list or update local array
+      const index = this.students.findIndex(s => s.id === this.editId);
+      if (index > -1) {
+        this.students[index] = { ...this.students[index], ...updated };
+      }
+      this.editId = null;
+      window.location.reload();
+    },
+    error: err => console.error("Update failed", err)
+  });
+}
+
+cancelEdit() {
+  this.editId = null;
+}
   openModal() {
     this.isOpen = true;
   }
@@ -265,12 +344,7 @@ updateStudentProgram() {
   }
 
 
-  openUpdateModal(id: number) {
-    this.isOpen = true;
 
-    console.log('Opening modal for ID:', id);
-    // Your logic to open modal here
-  }
 
 
   closeUpdateModal() {

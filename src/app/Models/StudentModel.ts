@@ -1,5 +1,9 @@
+import { DepartmentModel } from "./departmentModel";
+
 export interface StudentData{
   id: number;
   programme: string;
-  total_students: string;
+  programme_code:string;
+  total_students: number;
+  department:DepartmentModel;
 }

@@ -1,3 +1,5 @@
+import { DepartmentModel } from "./departmentModel";
+
 export interface CourseData{
   id : number;
   course_code :string;
@@ -5,5 +7,6 @@ export interface CourseData{
   semester :string;
   is_tutorial :boolean;
   is_lecture : boolean;
-  time_difference :string;
+  is_practical :string;
+  department:DepartmentModel;
 }

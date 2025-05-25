@@ -1,3 +1,5 @@
+import { DepartmentModel } from "./departmentModel";
+
 export interface UserDetails {
   id: number;
   first_name: string;

@@ -39,10 +39,11 @@ selectedStudent: any = {};  // will store student info for editing
   user_dept : String='';
 
 
-editId: number | null = null;
- editProgramme: string = '';
- editCode: string = '';
- editTotal: number = 0;
+    editId: number | null = null;
+    pageSize = 10;
+    currentPage = 1;
+    searchText = '';
+    editIndex: number | null = null;
 
 
   constructor(private http : HttpClient ){
@@ -100,7 +101,7 @@ editId: number | null = null;
     }
   }
 
-  Insert_Program(){
+  insert_Program(){
 
     console.log("................")
 
@@ -147,14 +148,6 @@ editId: number | null = null;
 
 
 
-onExcelSelected(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    this.UploadExcelFile(file);
-  }
-}
-
-
 
 GetStudents(){
 
@@ -166,22 +159,50 @@ GetStudents(){
 
          console.log("................");
 
-        // if (this.user_dept == response) {
-
-        // }
-
         this.students = response;
         console.log(response);
-        this.initializeTable();
+
 
       },
       error => {
-
 
         console.log(error);
       }
     );
 }
+
+
+
+
+
+updateStudentProgram(item : any) {
+
+  console.log("clicked");
+  const payload = {
+    programme: item.programme,
+    programme_code:item.programme_code,
+    total_students: item.total_students,
+  };
+
+  this.isLoading = true;
+
+  this.http.put(`${environment.baseUrl}/update_student_program/${item.id}`, payload).subscribe({
+    next: (res) => {
+      console.log('Update successful', res);
+      this.isLoading = false;
+      this.isUpdateModalOpen = false;
+      // You can refresh your student list here if needed
+
+      this.GetStudents();
+    },
+    error: (err) => {
+      console.error('Update failed', err);
+      this.isLoading = false;
+    }
+  });
+}
+
+
 
 
   GetDepartment(){
@@ -194,7 +215,6 @@ GetStudents(){
 
           this.department = response;
           console.log(this.department);
-          this.initializeTable();
 
         },
         error => {
@@ -206,125 +226,41 @@ GetStudents(){
   }
 
 
-
-isDragging = false;
-selectedFile: File | null = null;
-
-onDragOver(event: DragEvent) {
-  event.preventDefault();
-  this.isDragging = true;
+  get filteredVenues() {
+  if (!this.searchText) return this.students;
+  return this.students.filter(item =>
+    (item.programme?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+     item.programme_code?.toLowerCase().includes(this.searchText.toLowerCase())
+     )
+  );
 }
 
-onDragLeave(event: DragEvent) {
-  event.preventDefault();
-  this.isDragging = false;
-}
-
-onFileDrop(event: DragEvent) {
-  event.preventDefault();
-  this.isDragging = false;
-
-  const file = event.dataTransfer?.files[0];
-  if (file && this.validateExcel(file)) {
-    this.selectedFile = file;
-    this.UploadExcelFile(file);
+get paginatedVenues() {
+  if (this.pageSize === this.filteredVenues.length) {
+    // show all if pageSize = all
+    return this.filteredVenues;
   }
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  return this.filteredVenues.slice(start, end);
 }
 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (file && this.validateExcel(file)) {
-    this.selectedFile = file;
-    this.UploadExcelFile(file);
-  }
-}
-
-validateExcel(file: File): boolean {
-  const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-  const isValid = validTypes.includes(file.type);
-  if (!isValid) {
-    Swal.fire('Invalid file', 'Please upload a valid Excel file.', 'error');
-  }
-  return isValid;
-}
-
-UploadExcelFile(file: File) {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  this.http.post(`${environment.baseUrl}/upload-students`, formData)
-    .subscribe(
-      (response: any) => {
-        Swal.fire('Success', `${response.message}`, 'success');
-        this.selectedFile = null;
-      },
-      (error) => {
-        Swal.fire('Error', error.error?.error || 'Upload failed', 'error');
-      }
-    );
-}
-
-updateStudentProgram() {
-  const payload = {
-    id: this.selectedStudent.id,
-    programme: this.selectedStudent.programme,
-    total_students: this.selectedStudent.total_students,
-    coordinator_id: this.selectedStudent.coordinator_id
-  };
-
-  this.isLoading = true;
-
-  this.http.put('/update_student_program', payload).subscribe({
-    next: (res) => {
-      console.log('Update successful', res);
-      this.isLoading = false;
-      this.isUpdateModalOpen = false;
-      // You can refresh your student list here if needed
-      this.GetStudents();
-    },
-    error: (err) => {
-      console.error('Update failed', err);
-      this.isLoading = false;
-    }
-  });
-}
-
-
-
-openUpdateModal(id: number) {
-  const student = this.students.find(s => s.id === id);
-  if (student) {
-    this.editId = id;
-    this.editProgramme = student.programme;
-    this.editCode = student.programme_code;
-    this.editTotal = student.total_students;
-  }
-}
-
-saveEdit() {
-  const updated = {
-    programme: this.editProgramme,
-    programme_code: this.editCode,
-    total_students: this.editTotal
-  };
-
-  this.http.patch(`${environment.baseUrl}/update_student_program/${this.editId}`, updated).subscribe({
-    next: () => {
-      // Refresh list or update local array
-      const index = this.students.findIndex(s => s.id === this.editId);
-      if (index > -1) {
-        this.students[index] = { ...this.students[index], ...updated };
-      }
-      this.editId = null;
-      window.location.reload();
-    },
-    error: err => console.error("Update failed", err)
-  });
+get totalPages() {
+  return Math.ceil(this.filteredVenues.length / this.pageSize) || 1;
 }
 
 cancelEdit() {
-  this.editId = null;
+  this.editIndex = null;
 }
+
+
+openUpdateModal(index: number) {
+  this.editIndex = index;
+
+}
+
+
+
   openModal() {
     this.isOpen = true;
   }
@@ -352,14 +288,5 @@ cancelEdit() {
     this.selectedStudent = {};
   }
 
-
-
-
-  initializeTable(): void {
-    setTimeout(() => {
-      let datatable = new DataTable('#search-table');
-      console.log('Table initialized');
-    }, 100);
-  }
 
 }

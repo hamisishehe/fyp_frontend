@@ -1,3 +1,5 @@
+import { DepartmentModel } from "./departmentModel";
+
 export interface InstructorData {
   id: number;
   first_name: string;
@@ -7,4 +9,5 @@ export interface InstructorData {
   email: string;
   phone_number: string;
   title:string
+  department:DepartmentModel
 }

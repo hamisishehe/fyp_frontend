@@ -118,7 +118,10 @@
   </thead>
   <tbody class="bg-white">
 
-    <tr *ngFor="let item of instructors">
+    <ng-container *ngFor="let item of instructors">
+
+
+      <tr *ngIf="item.department.short_name === userData?.department">
          <td class="font-bold">{{item.id}}</td>
          <td class="font-bold">{{item.first_name}}</td>
          <td class="font-bold">{{item.middle_name}}</td>
@@ -153,6 +156,7 @@
 
 
     </tr>
+    </ng-container>
 
 
   </tbody>
@@ -192,22 +196,26 @@
             <form (ngSubmit)="Insert_NewInstructor()" #Instructorform="ngForm">
 
 
-                 <div class="mt-4">
+
+                   <div class="mt-4">
                   <label
                     for="department"
                     class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
                     >Department</label
                   >
                    <select
-                id="gender"
-                name="gender"
+                id="departmen"
+                name="departmen"
                 [(ngModel)]="department_id"
                 #v_department="ngModel"
                 class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                 required
                 >
-                <option *ngFor="let item of department" value="{{item.id}}">{{item.collage.short_name}} | {{item.short_name}}</option>
-
+        <ng-container *ngFor="let item of department">
+  <option *ngIf="item.short_name === userData?.department" [value]="item.id">
+    {{item.collage.short_name}} | {{item.short_name}}
+  </option>
+</ng-container>
 
                 </select>
                 <div

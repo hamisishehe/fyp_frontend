@@ -32,6 +32,7 @@ export class CoordinatorAssignCourseComponent {
 
 
 
+
   asignCourseResult: CourseMatrixView [] = [];
 
 
@@ -39,6 +40,10 @@ export class CoordinatorAssignCourseComponent {
   course_id : number = 0;
   student_id: number[] = [];
   instructor_id: number = 0;
+  department_name :string='';
+  group:string='';
+  program_group_check : boolean = false;
+  display_group_card : boolean = false;
 
 
   constructor(private http : HttpClient ){
@@ -50,6 +55,7 @@ export class CoordinatorAssignCourseComponent {
 
   ngOnInit() {
 
+    this.display_group_card = this.program_group_check;
     this.getProfile();
     this.GetCourse();
     this.GetInstructors();
@@ -60,6 +66,11 @@ export class CoordinatorAssignCourseComponent {
 
 
 
+onCheckboxChange() {
+  this.display_group_card = this.program_group_check;
+}
+
+
   AssignCourse(){
 
       console.log("................")
@@ -68,10 +79,13 @@ export class CoordinatorAssignCourseComponent {
           instructor_id: this.instructor_id,
           course_id: this.course_id,
           student_id: this.student_id,
+          program_group:this.group
         };
 
         const headers = { 'Content-Type': 'application/json' };
 
+
+        console.log(form_data);
 
         this.http.post<any>(`${environment.baseUrl}/assign-course`, form_data,  { headers })
           .subscribe(
@@ -165,16 +179,21 @@ GetCourse(){
   this.http.get<CourseData[]>(`${environment.baseUrl}/course_list`)
     .subscribe(
       response => {
+        // Filter for department name "ist"
+        const filteredCourses = response.filter(item =>
+          item.department?.short_name === this.userData?.department
+        );
 
-        this.course_list = response.map(item => ({
+        // Map to include displayText
+        this.course_list = filteredCourses.map(item => ({
           ...item,
           displayText: `${item.course_name} ${item.course_code}`
         }));
 
+
       },
       error => {
-
-        console.log("Error  ................")
+        console.log("Error ................");
         console.log(error);
       }
     );
@@ -182,16 +201,25 @@ GetCourse(){
 
 GetInstructors(){
 
-  console.log("................")
+  console.log("................");
 
   this.http.get<InstructorData[]>(`${environment.baseUrl}/instructors`)
     .subscribe(
       response => {
 
-        this.instructors = response.map(item => ({
+
+        const filteredInstructors = response.filter(item =>
+          item.department?.short_name === this.userData?.department
+        );
+
+        this.instructors = filteredInstructors.map(item => ({
           ...item,
           displayText: `${item.first_name} ${item.last_name}`
         }));
+
+        console.log(response);
+
+        console.log("................");
 
      this.initializeTable();
       },
@@ -214,7 +242,7 @@ GetStudents(){
 
         this.students = response.map(item => ({
           ...item,
-          displayText: `${item.programme}`
+          displayText: `${item.programme} -> ${item.programme_code}`
         }));
 
       },
@@ -239,20 +267,24 @@ GetAssignedCourse() {
           if (!grouped[key]) {
             grouped[key] = {
               course_matrix_id: item.course_matrix_id,
+              course_matrix:item.course_matrix,
               course: item.course,
               instructor: item.instructor,
-              students: [item.student.programme]
+              students: [item.student.programme_code]
             };
           } else {
-            grouped[key].students.push(item.student.programme);
+            grouped[key].students.push(item.student.programme_code);
           }
         });
+
 
         this.asignCourseResult = Object.values(grouped).map((entry: any) => ({
           ...entry,
           studentProgrammes: entry.students.join(", ")
         }));
 
+
+        console.log(this.asignCourseResult);
         this.initializeTable();
       },
       error => {

@@ -20,11 +20,18 @@
 
   </nav>
 
+
+
+  <div>
+      <h2 class=" p-3 font-bold font-sans text-md ">    Department :     <span class="px-2 py-1 text-sm text-blue-600 bg-blue-100 rounded-full">  {{userData?.department}} </span></h2>
+  </div>
+
   <!-- Assign Course Form -->
   <form (submit)="AssignCourse()" #AssignForm="ngForm" >
-  <div class="p-3 rounded-lg shadow-md bg-gray-50 dark:bg-gray-900">
 
 
+
+     <div class="mt-4">
         <!-- Course -->
         <label for="course_name" class="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
           Course Name and Code
@@ -42,6 +49,12 @@
           class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg"
         ></ng-select>
 
+
+
+
+      </div>
+
+        <div class="mt-4">
         <!-- Instructor -->
         <label for="instructor_name" class="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
           Instructor
@@ -58,10 +71,12 @@
           id="instructor_name"
           class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg"
         ></ng-select>
+       </div>
 
+       <div class="mt-4">
         <!-- Student -->
         <label for="student_name" class="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
-          Student
+          Student Program
         </label>
         <ng-select
           [items]="students"
@@ -70,14 +85,57 @@
           [(ngModel)]="student_id"
           [multiple]="true"
           [trackByFn]="trackById"
-          placeholder="Select a Students"
           [searchable]="true"
           name="student_id"
           id="student_name"
           class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg"
         ></ng-select>
+        </div>
 
-      </div>
+
+        <div class="mt-4">
+     <div class="mt-4">
+  <div class="flex items-center ps-4 border border-gray-200 rounded-sm dark:border-gray-700 gap-2">
+    <input
+      id="bordered-checkbox-1"
+      type="checkbox"
+      [(ngModel)]="program_group_check"
+      name="program_group_check"
+      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+    />
+    <label
+      for="bordered-checkbox-1"
+      class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+      >Program Groups ?</label
+    >
+  </div>
+</div>
+
+
+        </div>
+
+           <div class="mt-4" *ngIf="program_group_check">
+  <label
+    for="group"
+    class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+    >Select Group</label
+  >
+  <select
+    id="group"
+    name="group"
+    [(ngModel)]="group"
+    #v_group="ngModel"
+    class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
+    required
+  >
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+    <option value="D">D</option>
+    <option value="E">E</option>
+  </select>
+  <div *ngIf="v_group.invalid && v_group.touched" class="mt-1 text-sm text-red-600"></div>
+</div>
 
 
 
@@ -126,7 +184,16 @@
 
             <th>
               <span class="flex items-center">
-                 Students
+                 Programs
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                  </svg>
+              </span>
+          </th>
+
+          <th>
+              <span class="flex items-center">
+                 Group
                   <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                   </svg>
@@ -151,6 +218,7 @@
              <td class="font-bold">{{item.course.name}}</td>
              <td class="font-bold">{{item.course.code}}</td>
              <td class="font-bold">{{item.studentProgrammes}}</td>
+             <td class="font-bold">{{item.course_matrix.program_group}}</td>
              <td class="font-bold">{{item.instructor.name}}</td>
 
 

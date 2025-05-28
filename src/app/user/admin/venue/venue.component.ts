@@ -38,6 +38,12 @@ export class VenueComponent implements OnInit{
     teaching_capacity: number = 0;
     total_exam: number = 0;
 
+
+    pageSize = 10;
+    currentPage = 1;
+    searchText = '';
+    editIndex: number | null = null;
+
     exam_capacity = this.teaching_capacity / 2;
 
 
@@ -192,21 +198,37 @@ GetVenue(){
 }
 
 
+get filteredVenues() {
+  if (!this.searchText) return this.venue;
+  return this.venue.filter(item =>
+    (item.name?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+     item.location?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+     item.type?.toLowerCase().includes(this.searchText.toLowerCase()))
+  );
+}
 
-editIndex: number | null = null;
+get paginatedVenues() {
+  if (this.pageSize === this.filteredVenues.length) {
+    // show all if pageSize = all
+    return this.filteredVenues;
+  }
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  return this.filteredVenues.slice(start, end);
+}
 
-originalVenue: any = {}; // Backup for canceling
+get totalPages() {
+  return Math.ceil(this.filteredVenues.length / this.pageSize) || 1;
+}
 
 cancelEdit() {
-  if (this.editIndex !== null) {
-    this.venue[this.editIndex] = { ...this.originalVenue };
-    this.editIndex = null;
-  }
+  this.editIndex = null;
 }
+
 
 openUpdateModal(index: number) {
   this.editIndex = index;
-  this.originalVenue = { ...this.venue[index] };
+
 }
 
 updateVenue(item: any) {
@@ -226,6 +248,7 @@ updateVenue(item: any) {
             });
       console.log('Updated:', res);
       this.editIndex = null;
+       window.location.reload();
     },
     error: (err) => {
       Swal.fire({
@@ -246,16 +269,6 @@ updateVenue(item: any) {
 
     closeModal() {
       this.isOpen = false;
-    }
-
-
-
-    openUploadModal() {
-      this.isUploadOpen = true;
-    }
-
-    closeUploadModal() {
-      this.isUploadOpen = false;
     }
 
 

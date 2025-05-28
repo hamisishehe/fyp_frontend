@@ -57,10 +57,7 @@ export class CoordinatorAssignCourseComponent {
 
     this.display_group_card = this.program_group_check;
     this.getProfile();
-    this.GetCourse();
-    this.GetInstructors();
-    this.GetStudents();
-    this.GetAssignedCourse();
+
 
   }
 
@@ -159,7 +156,10 @@ onCheckboxChange() {
             this.userData = data;
             this.Coordinator_id = this.userData.id;
 
-            console.log(this.userData.id);
+                this.GetCourse();
+             this.GetInstructors();
+          this.GetStudents();
+            this.GetAssignedCourse();
           },
           (error) => {
             console.error('Error fetching user profile', error);
@@ -189,6 +189,8 @@ GetCourse(){
           ...item,
           displayText: `${item.course_name} ${item.course_code}`
         }));
+
+        console.log(filteredCourses);
 
 
       },
@@ -221,7 +223,6 @@ GetInstructors(){
 
         console.log("................");
 
-     this.initializeTable();
       },
       error => {
 

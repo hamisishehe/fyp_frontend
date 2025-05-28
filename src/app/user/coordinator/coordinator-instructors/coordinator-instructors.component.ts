@@ -22,6 +22,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
   userData : UserDetails | null = null;
   instructors: InstructorData [] = [];
   department: DepartmentModel [] = [];
+  isLoading : boolean = false;
 
 
   Coordinator_id : number = 0;
@@ -33,6 +34,15 @@ export class CoordinatorInstructorsComponent implements OnInit{
   email : string='';
   title : string='';
   department_id:number=0;
+
+    editId: number | null = null;
+    pageSize = 10;
+    currentPage = 1;
+    searchText = '';
+    editIndex: number | null = null;
+    isUpdateModalOpen = false;
+    mselectedStudent: any = {};  // will store student info for editing
+
 
 
   constructor(private http : HttpClient ){
@@ -176,6 +186,73 @@ GetInstructors(){
     );
 }
 
+updateInstructor(item : any) {
+
+  console.log("clicked");
+    const payload = {
+      first_name: item.first_name,
+      middle_name: item.middle_name,
+      last_name: item.last_name,
+      gender:item.gender,
+      phone_number: item.phone_number,
+      email: item.email,
+      title: item.title,
+    };
+
+
+  this.isLoading = true;
+
+  this.http.put(`${environment.baseUrl}/update_instructor/${item.id}`, payload).subscribe({
+    next: (res) => {
+      console.log('Update successful', res);
+      this.isLoading = false;
+      this.isUpdateModalOpen = false;
+      // You can refresh your student list here if needed
+
+      this.GetInstructors();
+    },
+    error: (err) => {
+      console.error('Update failed', err);
+      this.isLoading = false;
+    }
+  });
+}
+
+
+
+
+get filteredCourse() {
+  if (!this.searchText) return this.instructors;
+  return this.instructors.filter(item =>
+    (item.first_name?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+     item.last_name?.toLowerCase().includes(this.searchText.toLowerCase())
+     )
+  );
+}
+
+get paginatedVenues() {
+  if (this.pageSize === this.filteredCourse.length) {
+    // show all if pageSize = all
+    return this.filteredCourse;
+  }
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  return this.filteredCourse.slice(start, end);
+}
+
+get totalPages() {
+  return Math.ceil(this.filteredCourse.length / this.pageSize) || 1;
+}
+
+cancelEdit() {
+  this.editIndex = null;
+}
+
+
+openUpdateModal(index: number) {
+  this.editIndex = index;
+
+}
 
 
   openModal() {

@@ -71,9 +71,9 @@
 
 
 
-<table class=" w-full table table-hover table-striped" >
+<table class=" w-full table table-hover table-striped border-collapse border border-gray-400" >
   <thead>
-      <tr>
+      <tr class="border border-gray-300">
         <th>
           <span class="flex items-center">
              #
@@ -82,7 +82,7 @@
               </svg>
           </span>
       </th>
-          <th>
+          <th class="border border-gray-300">
               <span class="flex items-center">
                   Name
                   <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@
               </span>
           </th>
 
-            <th>
+            <th class="border border-gray-300">
               <span class="flex items-center">
                   Code
                   <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@
               </span>
           </th>
 
-          <th>
+          <th class="border border-gray-300">
             <span class="flex items-center">
                Total
                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -122,30 +122,31 @@
   </thead>
  <tbody >
 
-  <tr *ngFor="let item of paginatedVenues, let i = index">
+  <ng-container *ngFor="let item of paginatedVenues, let i = index">
+      <tr *ngIf="item.department.short_name === userData?.department">
 
-    <td class="font-bold">{{ item.id }}</td>
+    <td class="font-bold border border-gray-300" >{{ item.id }}</td>
     <!-- Programme -->
-       <td class="px-6 py-4">
+       <td class="px-6 py-4 border border-gray-300">
         <input *ngIf="editIndex === i" [(ngModel)]="item.programme" class="w-full px-2 py-1 border rounded" />
         <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.programme }}</span>
       </td>
 
     <!-- Programme Code -->
-    <td class="font-bold">
+    <td class="font-bold border border-gray-300">
         <input *ngIf="editIndex === i" [(ngModel)]="item.programme_code" class="w-full px-2 py-1 border rounded" />
         <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.programme_code }}</span>
     </td>
 
     <!-- Total Students -->
-    <td class="font-bold">
+    <td class="font-bold border border-gray-300">
          <input *ngIf="editIndex === i" [(ngModel)]="item.total_students" class="w-full px-2 py-1 border rounded" />
         <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.total_students }}</span>
     </td>
 
     <!-- Action Buttons -->
 
-      <td class="px-6 py-4 whitespace-nowrap">
+      <td class="px-6 py-4 whitespace-nowrap border border-gray-300">
         <ng-container *ngIf="editIndex !== i; else editing">
           <button (click)="editIndex = i">
             <span class="px-2 py-1 text-sm">
@@ -167,6 +168,12 @@
         </ng-template>
       </td>
   </tr>
+
+
+  </ng-container>
+
+
+
 
 </tbody>
 

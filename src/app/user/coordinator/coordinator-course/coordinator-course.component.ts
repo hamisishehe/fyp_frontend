@@ -34,6 +34,16 @@ export class CoordinatorCourseComponent {
   department_id:number=0;
 
 
+
+    editId: number | null = null;
+    pageSize = 10;
+    currentPage = 1;
+    searchText = '';
+    editIndex: number | null = null;
+
+
+
+
   constructor(private http : HttpClient ){
 
   }
@@ -141,7 +151,7 @@ GetCourse(){
 
         this.course_list = response;
         console.log(response);
-        this.initializeTable();
+
 
       },
       error => {
@@ -163,7 +173,7 @@ GetCourse(){
 
           this.department = response;
           console.log(this.department);
-          this.initializeTable();
+
 
         },
         error => {
@@ -185,13 +195,38 @@ GetCourse(){
   }
 
 
+get filteredCourse() {
+  if (!this.searchText) return this.course_list;
+  return this.course_list.filter(item =>
+    (item.course_name?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+     item.course_code?.toLowerCase().includes(this.searchText.toLowerCase())
+     )
+  );
+}
 
-
-  initializeTable(): void {
-    setTimeout(() => {
-      let datatable = new DataTable('#search-table');
-      console.log('Table initialized');
-    }, 100);
+get paginatedVenues() {
+  if (this.pageSize === this.filteredCourse.length) {
+    // show all if pageSize = all
+    return this.filteredCourse;
   }
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  return this.filteredCourse.slice(start, end);
+}
+
+get totalPages() {
+  return Math.ceil(this.filteredCourse.length / this.pageSize) || 1;
+}
+
+cancelEdit() {
+  this.editIndex = null;
+}
+
+
+openUpdateModal(index: number) {
+  this.editIndex = index;
+
+}
+
 
 }

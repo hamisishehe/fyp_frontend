@@ -226,7 +226,7 @@ updateStudentProgram(item : any) {
   }
 
 
-  get filteredVenues() {
+get filteredVenues() {
   if (!this.searchText) return this.students;
   return this.students.filter(item =>
     (item.programme?.toLowerCase().includes(this.searchText.toLowerCase()) ||

@@ -2,6 +2,7 @@ export interface Session {
   day: string;
   time: string;
   course_code: string;
+  course_name: string;
   groups: string[];
   instructor: string;
   venue: string;

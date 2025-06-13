@@ -8,11 +8,12 @@ import { Session, TimetableResponse } from '../../../Models/timetableModel';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../../environments/environment';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-t-master-teaching-timetable',
-  imports: [HttpClientModule,CommonModule, DragDropModule],
+  imports: [HttpClientModule,CommonModule, DragDropModule, FormsModule],
   templateUrl: './t-master-teaching-timetable.component.html',
   styleUrl: './t-master-teaching-timetable.component.css'
 })
@@ -22,6 +23,14 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   draftNumber: string = 'DRAFT TWO'; // Default value
   releaseDate: string = new Date().toISOString().split('T')[0]; // Default to today (yyyy-mm-dd)
 
+  semester:number=0;
+  start_time:string ='';
+  isloading:boolean = false;
+
+
+  isOpen = false;
+  isUploadOpen=false;
+  isLoading: boolean = false;
 
   constructor(private http: HttpClient) {}
 
@@ -70,14 +79,28 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
 
   GenerateTimeTable(){
+    this.isLoading = true;
+
+    console.log("................")
+
+    const form_data = {
+      start_time: this.start_time,
+      semester: this.semester,
+    };
+
+    console.log(form_data);
+
+    const headers = { 'Content-Type': 'application/json' };
+
 
     const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
 
-    this.http.post<TimetableResponse>(apiUrl, {}).subscribe(
+    this.http.post<TimetableResponse>(apiUrl, form_data, {headers}).subscribe(
       (response) => {
         if (response.status === 'success') {
           console.log(response);
          this.timetable = response.data;
+         this.isLoading = false;
         } else {
           console.error('Failed to fetch timetable:', response.message);
         }
@@ -113,6 +136,17 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     );
 
   }
+
+  openModal() {
+    this.isOpen = true;
+  }
+
+  closeModal() {
+    this.isOpen = false;
+  }
+
+
+
 
   createPDF() {
 
@@ -214,6 +248,7 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
     // Swap only the specified fields
     [prev.course_code, curr.course_code] = [curr.course_code, prev.course_code];
+    [prev.course_name, curr.course_name] = [curr.course_name, prev.course_name];
     [prev.groups, curr.groups] = [curr.groups, prev.groups];
     [prev.instructor, curr.instructor] = [curr.instructor, prev.instructor];
     [prev.venue, curr.venue] = [curr.venue, prev.venue];

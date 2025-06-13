@@ -68,6 +68,30 @@ export const routes: Routes = [
         canActivate: [authGuardGuard],
       },
 
+
+      {
+        path: 'user/timetable-master/usermanagement',
+        component: UsersComponent,
+        canActivate: [authGuardGuard],
+      },
+
+      {
+        path: 'user/timetable-master/collagemanagement',
+        component: CollageComponent,
+        canActivate: [authGuardGuard],
+      },
+
+        {
+        path: 'user/timetable-master/department',
+        component: DepartmentComponent,
+        canActivate: [authGuardGuard],
+      },
+        {
+        path: 'user/timetable-master/venue',
+        component: VenueComponent,
+        canActivate: [authGuardGuard],
+      },
+
     ],
   },
   //end routes for timetable master

@@ -81,7 +81,6 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   GenerateTimeTable(){
     this.isLoading = true;
 
-    console.log("................")
 
     const form_data = {
       start_time: this.start_time,

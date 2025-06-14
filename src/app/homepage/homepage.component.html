@@ -1,0 +1,57 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4 text-center">UDOM Timetable System</h1>
+
+  <div class="bg-green-200 p-4 rounded-lg mb-4">
+    <h2 class="text-lg font-semibold">Timetable Downloads</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+      <select class="p-2 border rounded" [(ngModel)]="academicYear" (ngModelChange)="filterTimetable()">
+        <option value="">Select Academic Year</option>
+        <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
+      </select>
+      <select class="p-2 border rounded" [(ngModel)]="semester" (ngModelChange)="filterTimetable()">
+        <option value="">Select Semester</option>
+        <option value="1">Semester 1</option>
+        <option value="2">Semester 2</option>
+      </select>
+      <select class="p-2 border rounded" [(ngModel)]="category" (ngModelChange)="filterTimetable()">
+        <option value="">Select Category</option>
+        <option value="Lecture">Lecture</option>
+        <option value="Tutorial">Tutorial</option>
+        <option value="Practical">Practical</option>
+      </select>
+      <select class="p-2 border rounded" [(ngModel)]="courseProgramme" (ngModelChange)="filterTimetable()">
+        <option value="">Select Course/Programme</option>
+        <option *ngFor="let course of uniqueCourses" [value]="course">{{ course }}</option>
+      </select>
+    </div>
+  </div>
+
+  <table class="w-full bg-white shadow-md rounded my-4">
+    <thead>
+      <tr class="bg-gray-200 text-left">
+        <th class="p-2">Course Code</th>
+        <th class="p-2">Course Name</th>
+        <th class="p-2">Session Type</th>
+        <th class="p-2">Day</th>
+        <th class="p-2">Time</th>
+        <th class="p-2">Venue</th>
+        <th class="p-2">Instructor</th>
+        <th class="p-2">Groups</th>
+        <th class="p-2">Semester</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let schedule of filteredTimetable" class="border-b">
+        <td class="p-2">{{ schedule.course_code }}</td>
+        <td class="p-2">{{ schedule.course_name }}</td>
+        <td class="p-2">{{ schedule.session_type }}</td>
+        <td class="p-2">{{ schedule.day }}</td>
+        <td class="p-2">{{ schedule.time }}</td>
+        <td class="p-2">{{ schedule.venue }}</td>
+        <td class="p-2">{{ schedule.instructor }}</td>
+        <td class="p-2">{{ schedule.groups.join(', ') }}</td>
+        <td class="p-2">{{ schedule.semester }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

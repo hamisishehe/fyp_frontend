@@ -55,19 +55,52 @@
           <th>Students</th>
           <th>Instructor</th>
           <th>Venue</th>
+          <th>Edit</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let session of timetable" cdkDrag [cdkDragData]="session">
+        <tr *ngFor="let session of timetable; let i = index" cdkDrag [cdkDragData]="session">
           <td>{{ session.day }}</td>
           <td>{{ session.time }}</td>
-          <td>{{ session.course_code  }} </td>
-          <td>{{ session.course_name  }}- {{session.session_type}}</td>
-          <td>{{ session.groups.join(', ') }}</td>
-          <td>{{ session.instructor }}</td>
-          <td>{{ session.venue }}</td>
+
+          <!-- Course Name (was previously course_code) -->
+          <td>
+            <input *ngIf="editIndex === i" [(ngModel)]="session.course_name" class="border rounded px-2 py-1 w-full text-xs" />
+            <span *ngIf="editIndex !== i">{{ session.course_name }}</span>
+          </td>
+
+          <!-- Course Code + Session Type (was previously course_name) -->
+          <td>
+            <input *ngIf="editIndex === i" [(ngModel)]="session.course_code" class="border rounded px-2 py-1 w-full text-xs" />
+            <span *ngIf="editIndex !== i">{{ session.course_code }} - {{ session.session_type }}</span>
+          </td>
+
+          <!-- Students -->
+          <td>
+            <input *ngIf="editIndex === i" [(ngModel)]="session.groupsStr" class="border rounded px-2 py-1 w-full text-xs" />
+            <span *ngIf="editIndex !== i">{{ session.groups.join(', ') }}</span>
+          </td>
+
+          <!-- Instructor -->
+          <td>
+            <input *ngIf="editIndex === i" [(ngModel)]="session.instructor" class="border rounded px-2 py-1 w-full text-xs" />
+            <span *ngIf="editIndex !== i">{{ session.instructor }}</span>
+          </td>
+
+          <!-- Venue -->
+          <td>
+            <input *ngIf="editIndex === i" [(ngModel)]="session.venue" class="border rounded px-2 py-1 w-full text-xs" />
+            <span *ngIf="editIndex !== i">{{ session.venue }}</span>
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <button *ngIf="editIndex !== i" (click)="enableEdit(i)" class="text-blue-500 text-xs hover:underline">Edit</button>
+            <button *ngIf="editIndex === i" (click)="saveEdit(i)" class="text-green-600 text-xs hover:underline">Save</button>
+          </td>
         </tr>
       </tbody>
+
     </table>
   </div>
 
@@ -178,5 +211,21 @@
      </div>
 
   </div>
+
+  <!-- Toast Notification -->
+<div
+*ngIf="showToast"
+class="fixed top-5 right-5 z-50 max-w-sm w-full rounded shadow-lg p-4
+text-white
+animate-fade-in-out
+"
+[ngClass]="{
+  'bg-red-600': toastType === 'error',
+  'bg-green-600': toastType === 'success'
+}"
+>
+{{ toastMessage }}
+</div>
+
 </div>
 

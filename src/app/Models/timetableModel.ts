@@ -6,11 +6,12 @@ export interface Session {
   groups: string[];
   instructor: string;
   venue: string;
-  session_type:string;
+  session_type: string;
 }
 
 export interface TimetableResponse {
   status: string;
   message: string;
-  data: Session[];  // An array of sessions
+  generated_date: string; // Single generated date at the root level
+  data: Session[];       // An array of sessions
 }

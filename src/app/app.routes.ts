@@ -26,8 +26,10 @@ import { ProfileComponent } from './user/admin/profile/profile.component';
 import { DashboardComponent } from './user/admin/dashboard/dashboard.component';
 import { DepartmentComponent } from './user/admin/department/department.component';
 import { VenueComponent } from './user/admin/venue/venue.component';
+import { HomepageComponent } from './homepage/homepage.component';
 
 export const routes: Routes = [
+  { path: '', component: HomepageComponent },
   { path: 'auth/login', component: LoginComponent },
   { path: 'notfound', component: NotfoundComponent },
 
@@ -191,7 +193,7 @@ export const routes: Routes = [
   //end admin router
 
   // Default redirect for empty path
-  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+  { path: '', redirectTo: '', pathMatch: 'full' },
 
   // Wildcard route for 404
   { path: '**', redirectTo: '/notfound' },

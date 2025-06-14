@@ -1,47 +1,43 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-import { BrowserModule } from '@angular/platform-browser';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { FormsModule } from '@angular/forms';
 import { Session, TimetableResponse } from '../../../Models/timetableModel';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../../environments/environment';
-import { FormsModule } from '@angular/forms';
 
+type ExtendedSession = Session & { groupsStr?: string };
 
 @Component({
   selector: 'app-t-master-teaching-timetable',
-  imports: [HttpClientModule,CommonModule, DragDropModule, FormsModule],
+  imports: [HttpClientModule, CommonModule, DragDropModule, FormsModule],
   templateUrl: './t-master-teaching-timetable.component.html',
-  styleUrl: './t-master-teaching-timetable.component.css'
+  styleUrls: ['./t-master-teaching-timetable.component.css']
 })
 export class TMasterTeachingTimetableComponent implements OnInit {
 
-  timetable: Session[] = [];
-  draftNumber: string = 'DRAFT TWO'; // Default value
-  releaseDate: string = new Date().toISOString().split('T')[0]; // Default to today (yyyy-mm-dd)
-
-  semester:number=0;
-  start_time:string ='';
-  isloading:boolean = false;
-
-
-  isOpen = false;
-  isUploadOpen=false;
+  editIndex: number | null = null;
+  timetable: ExtendedSession[] = [];
+  draftNumber: string = 'DRAFT TWO';
+  releaseDate: string = new Date().toISOString().split('T')[0];
+  semester: number = 0;
+  start_time: string = '';
   isLoading: boolean = false;
 
+  isOpen = false;
+  isUploadOpen = false;
+
+  showToast = false;
+  toastMessage = '';
+  toastType: 'error' | 'success' = 'success';
+
   constructor(private http: HttpClient) {}
-
-
 
   ngOnInit(): void {
     this.getLastTimetable();
   }
-
-
-
 
   fetchTimetable(): void {
     const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
@@ -49,9 +45,11 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     this.http.post<TimetableResponse>(apiUrl, {}).subscribe(
       (response) => {
         if (response.status === 'success') {
-          this.timetable = response.data;
+          this.timetable = response.data.map(session => ({
+            ...session,
+            groupsStr: session.groups.join(', ')
+          }));
           console.log(response);
-
         } else {
           console.error('Failed to fetch timetable:', response.message);
         }
@@ -62,13 +60,15 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     );
   }
 
-
   getLastTimetable(): void {
     const apiUrl = `${environment.baseUrl}/api/fetch-timetable-json`;
 
     this.http.get<TimetableResponse>(apiUrl).subscribe(
       (response) => {
-        this.timetable = response.data;
+        this.timetable = response.data.map(session => ({
+          ...session,
+          groupsStr: session.groups.join(', ')
+        }));
         console.log(this.timetable);
       },
       (error) => {
@@ -77,45 +77,39 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     );
   }
 
-
-  GenerateTimeTable(){
+  GenerateTimeTable() {
     this.isLoading = true;
-
 
     const form_data = {
       start_time: this.start_time,
       semester: this.semester,
     };
 
-    console.log(form_data);
-
     const headers = { 'Content-Type': 'application/json' };
-
-
     const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
 
-    this.http.post<TimetableResponse>(apiUrl, form_data, {headers}).subscribe(
+    this.http.post<TimetableResponse>(apiUrl, form_data, { headers }).subscribe(
       (response) => {
         if (response.status === 'success') {
-          console.log(response);
-         this.timetable = response.data;
-         this.isLoading = false;
+          this.timetable = response.data.map(session => ({
+            ...session,
+            groupsStr: session.groups.join(', ')
+          }));
+          this.isLoading = false;
+          this.showToastMessage('Timetable generated successfully', 'success');
         } else {
+          this.showToastMessage('Failed to generate timetable', 'error');
           console.error('Failed to fetch timetable:', response.message);
         }
       },
       (error) => {
+        this.showToastMessage('Error generating timetable', 'error');
         console.error('Error fetching timetable:', error);
       }
     );
-
-
   }
 
-
-  generatePDF(){
-
-
+  generatePDF() {
     const apiUrl = `${environment.baseUrl}/api/save-timetable-json`;
 
     const payload = {
@@ -127,28 +121,15 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     this.http.post(apiUrl, payload).subscribe(
       (response) => {
         console.log('Timetable saved successfully:', response);
-        this.createPDF();  // You can keep this logic
+        this.createPDF();
       },
       (error) => {
         console.error('Error saving timetable:', error);
       }
     );
-
   }
-
-  openModal() {
-    this.isOpen = true;
-  }
-
-  closeModal() {
-    this.isOpen = false;
-  }
-
-
-
 
   createPDF() {
-
     const pdf = new jsPDF();
     const img = new Image();
     img.src = 'images/logo.png';
@@ -160,13 +141,11 @@ export class TMasterTeachingTimetableComponent implements OnInit {
       pdf.setFont("times", "bold");
       pdf.setFontSize(12);
 
-
       const centerText = (text: string, yPos: number) => {
         const textWidth = pdf.getTextWidth(text);
         const x = (pageWidth - textWidth) / 2;
         pdf.text(text, x, yPos);
       };
-
 
       let y = 20;
       centerText("THE UNIVERSITY OF DODOMA", y);
@@ -178,12 +157,10 @@ export class TMasterTeachingTimetableComponent implements OnInit {
       centerText("SEMESTER ONE 2024/2025", y);
       y += 10;
 
-
       const release = new Date(this.releaseDate);
       const formattedDate = release.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
       centerText(`Released on: ${formattedDate}`, y);
-
 
       const tableColumn = ["DAY", "TIME", "COURSE", "STUDENTS", "INSTRUCTOR", "VENUE"];
       const tableRows: string[][] = [];
@@ -204,7 +181,6 @@ export class TMasterTeachingTimetableComponent implements OnInit {
         head: [tableColumn],
         body: tableRows,
         startY: 60,
-
         styles: {
           lineColor: [0, 0, 0],
           lineWidth: 0.1,
@@ -224,13 +200,9 @@ export class TMasterTeachingTimetableComponent implements OnInit {
         didParseCell: function (data) {
           const colIndex = data.column.index;
           const cell = data.cell;
-
-          // Make Course italic (column index 2)
           if (data.section === 'body' && colIndex === 2) {
             cell.styles.fontStyle = 'italic';
           }
-
-
         }
       });
 
@@ -238,33 +210,87 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     };
   }
 
-
-  onDrop(event: CdkDragDrop<any[]>) {
-    const prev = this.timetable[event.previousIndex];
-    const curr = this.timetable[event.currentIndex];
-
-    if (event.previousIndex === event.currentIndex) return;
-
-    // Swap only the specified fields
-    [prev.course_code, curr.course_code] = [curr.course_code, prev.course_code];
-    [prev.course_name, curr.course_name] = [curr.course_name, prev.course_name];
-    [prev.groups, curr.groups] = [curr.groups, prev.groups];
-    [prev.instructor, curr.instructor] = [curr.instructor, prev.instructor];
-    [prev.venue, curr.venue] = [curr.venue, prev.venue];
+  openModal() {
+    this.isOpen = true;
   }
 
-  // Update the timetable by sending the modified timetable back to the backend
-  updateTimetable(updatedTimetable: any): void {
-    const apiUrl = 'http://localhost:5000/api/update-timetable'; // Your Flask endpoint for updating
+  closeModal() {
+    this.isOpen = false;
+  }
 
-    this.http.post<any>(apiUrl, { timetable: updatedTimetable }).subscribe(
-      (response) => {
-        console.log('Timetable updated successfully');
+  enableEdit(index: number): void {
+    this.editIndex = index;
+  }
+
+  saveEdit(index: number): void {
+    // optionally validate/save changes
+    this.editIndex = null;
+    this.showToastMessage('Timetable updated successfully.', 'success');
+    this.saveTimetable();
+  }
+
+  onDrop(event: CdkDragDrop<any>) {
+    const draggedIndex = event.previousIndex;
+    const targetIndex = event.currentIndex;
+
+    const draggedItem = this.timetable[draggedIndex];
+    const targetItem = this.timetable[targetIndex];
+
+    const sameTimeSlot = draggedItem.day === targetItem.day && draggedItem.time === targetItem.time;
+
+    if (sameTimeSlot) {
+      const instructorConflict = draggedItem.instructor === targetItem.instructor;
+      const venueConflict = draggedItem.venue === targetItem.venue;
+
+      if (instructorConflict || venueConflict) {
+        const conflictTypes = [];
+        if (instructorConflict) conflictTypes.push('Instructor');
+        if (venueConflict) conflictTypes.push('Venue');
+
+        this.showToastMessage(
+          `Conflict: ${conflictTypes.join(' and ')} already occupied at this time.`,
+          'error'
+        );
+        return;
+      }
+    }
+
+    // Swap sessions
+    [this.timetable[draggedIndex], this.timetable[targetIndex]] = [this.timetable[targetIndex], this.timetable[draggedIndex]];
+
+    this.showToastMessage('Timetable updated successfully.', 'success');
+
+    this.saveTimetable();
+  }
+
+  saveTimetable(): void {
+    const apiUrl = `${environment.baseUrl}/api/update-timetable-json`;
+
+    const payload: TimetableResponse = {
+      status: 'success',
+      message: 'Updated timetable',
+      generated_date: new Date().toISOString(),
+      data: this.timetable.map(({ groupsStr, ...rest }) => rest), // omit groupsStr
+    };
+
+    this.http.post(apiUrl, payload).subscribe(
+      () => {
+        this.showToastMessage('Timetable saved to server.', 'success');
       },
       (error) => {
-        console.error('Error updating timetable:', error);
+        this.showToastMessage('Failed to save timetable.', 'error');
+        console.error('Error saving timetable:', error);
       }
     );
   }
 
+  showToastMessage(message: string, type: 'error' | 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToast = true;
+
+    setTimeout(() => {
+      this.showToast = false;
+    }, 4000);
+  }
 }

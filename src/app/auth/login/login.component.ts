@@ -65,25 +65,23 @@ export class LoginComponent {
 
           if (role === 'COORDINATOR') {
             localStorage.setItem('token', token);
-
-            window.location.href = '/user/coordinator/dashboard';
             this.loading = false;
+            this.router.navigate(['/user/coordinator/dashboard']);
           }
 
           if (role === 'ADMIN') {
             localStorage.setItem('token', token);
-
-            window.location.href = '/user/admin/dashboard';
             this.loading = false;
+            this.router.navigate(['/user/admin/dashboard']);
           }
+
           if (role === 'TIMETABLEMASTER') {
             localStorage.setItem('token', token);
-
-            console.log('login successfully');
-
-            window.location.href = '/user/timetable-master/dashboard';
             this.loading = false;
+            console.log('login successfully');
+            this.router.navigate(['/user/timetable-master/dashboard']);
           }
+
         },
         (error) => {
           this.message = 'Invalid Details';

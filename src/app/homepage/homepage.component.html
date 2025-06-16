@@ -1,57 +1,115 @@
 <div class="container mx-auto p-4">
-  <h1 class="text-2xl font-bold mb-4 text-center">UDOM Timetable System</h1>
+  <h1 class="text-2xl font-bold text-center mb-4 text-purple-800">UDOM TIMETABLE SYSTEM</h1>
+  <div class="bg-gray-100 p-4 rounded-lg shadow-lg">
+    <h2 class="text-lg font-semibold mb-2 text-gray-700">Timetable Downloads</h2>
+    <div class="grid grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Academic Year</label>
+        <select class="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm"
+                [(ngModel)]="selectedYear" (ngModelChange)="onYearChange()">
+          <option value="">Select Year</option>
+          <option *ngFor="let year of academicYears" [value]="year">{{year}}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Semester</label>
+        <select class="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm"
+                [(ngModel)]="selectedSemester" (ngModelChange)="onSemesterChange()" [disabled]="!selectedYear">
+          <option value="">Select Semester</option>
+          <option *ngFor="let semester of semesters" [value]="semester" [hidden]="!selectedYear">{{semester}}</option>
 
-  <div class="bg-green-200 p-4 rounded-lg mb-4">
-    <h2 class="text-lg font-semibold">Timetable Downloads</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-      <select class="p-2 border rounded" [(ngModel)]="academicYear" (ngModelChange)="filterTimetable()">
-        <option value="">Select Academic Year</option>
-        <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
-      </select>
-      <select class="p-2 border rounded" [(ngModel)]="semester" (ngModelChange)="filterTimetable()">
-        <option value="">Select Semester</option>
-        <option value="1">Semester 1</option>
-        <option value="2">Semester 2</option>
-      </select>
-      <select class="p-2 border rounded" [(ngModel)]="category" (ngModelChange)="filterTimetable()">
-        <option value="">Select Category</option>
-        <option value="Lecture">Lecture</option>
-        <option value="Tutorial">Tutorial</option>
-        <option value="Practical">Practical</option>
-      </select>
-      <select class="p-2 border rounded" [(ngModel)]="courseProgramme" (ngModelChange)="filterTimetable()">
-        <option value="">Select Course/Programme</option>
-        <option *ngFor="let course of uniqueCourses" [value]="course">{{ course }}</option>
-      </select>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Timetable Category</label>
+        <select class="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm"
+                [(ngModel)]="selectedCategory" (ngModelChange)="onCategoryChange()" [disabled]="!selectedSemester">
+          <option value="">Select Category</option>
+          <option value="Teaching">Teaching</option>
+          <option value="Examination">Examination</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mt-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Option for Download</label>
+        <select
+          class="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm"
+          [(ngModel)]="filterType"
+          (ngModelChange)="onFilterTypeChange()"
+          [disabled]="!selectedCategory"
+        >
+          <option value="group">Programme</option>
+          <option value="instructor">Instructor</option>
+          <option value="venue">Venue</option>
+        </select>
+      </div>
+      <div>
+        <ng-container *ngIf="filterType === 'group'; else showOther">
+          <label class="block text-sm font-medium text-gray-700">Programme</label>
+        </ng-container>
+
+        <ng-template #showOther>
+          <label class="block text-sm font-medium text-gray-700">{{ filterType | titlecase }}</label>
+        </ng-template>
+
+        <select
+          class="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm"
+          [(ngModel)]="filterValue"
+          *ngIf="filterOptions.length > 0"
+          [disabled]="!selectedCategory"
+        >
+          <option value="">
+            <ng-container *ngIf="filterType === 'group'; else showOther">
+              <label class="block text-sm font-medium text-gray-700">Programme</label>
+            </ng-container>
+
+            <ng-template #showOther>
+              <label class="block text-sm font-medium text-gray-700">{{ filterType | titlecase }}</label>
+            </ng-template>
+             </option>
+          <option *ngFor="let option of filterOptions" [value]="option">{{option}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-4 flex justify-end space-x-2">
+      <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" (click)="downloadTimetable()" [disabled]="timetables.length === 0">Download</button>
     </div>
   </div>
 
-  <table class="w-full bg-white shadow-md rounded my-4">
-    <thead>
-      <tr class="bg-gray-200 text-left">
-        <th class="p-2">Course Code</th>
-        <th class="p-2">Course Name</th>
-        <th class="p-2">Session Type</th>
-        <th class="p-2">Day</th>
-        <th class="p-2">Time</th>
-        <th class="p-2">Venue</th>
-        <th class="p-2">Instructor</th>
-        <th class="p-2">Groups</th>
-        <th class="p-2">Semester</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let schedule of filteredTimetable" class="border-b">
-        <td class="p-2">{{ schedule.course_code }}</td>
-        <td class="p-2">{{ schedule.course_name }}</td>
-        <td class="p-2">{{ schedule.session_type }}</td>
-        <td class="p-2">{{ schedule.day }}</td>
-        <td class="p-2">{{ schedule.time }}</td>
-        <td class="p-2">{{ schedule.venue }}</td>
-        <td class="p-2">{{ schedule.instructor }}</td>
-        <td class="p-2">{{ schedule.groups.join(', ') }}</td>
-        <td class="p-2">{{ schedule.semester }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="mt-4" *ngIf="timetables.length > 0">
+    <table class="w-full mt-2 border-collapse">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border p-2 text-left text-gray-700">Time/Day</th>
+          <th class="border p-2 text-left text-gray-700">07:30</th>
+          <th class="border p-2 text-left text-gray-700">08:30</th>
+          <th class="border p-2 text-left text-gray-700">09:30</th>
+          <th class="border p-2 text-left text-gray-700">10:30</th>
+          <th class="border p-2 text-left text-gray-700">11:30</th>
+          <th class="border p-2 text-left text-gray-700">12:30</th>
+          <th class="border p-2 text-left text-gray-700">13:30</th>
+          <th class="border p-2 text-left text-gray-700">15:30</th>
+          <th class="border p-2 text-left text-gray-700">17:30</th>
+          <th class="border p-2 text-left text-gray-700">18:30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let day of days" class="border">
+          <td class="border p-2 font-bold">{{day}}</td>
+          <td *ngFor="let time of timeSlots" class="border p-2">
+            <div *ngFor="let entry of getEntriesForSlot(day, time)" class="mb-2">
+              <div>{{entry.course_code}} - {{entry.course_name}}</div>
+              <div>{{entry.session_type}}</div>
+              <div>{{entry.instructor}}</div>
+              <div>{{entry.venue}}</div>
+              <div>{{entry.groups.join(', ')}}</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

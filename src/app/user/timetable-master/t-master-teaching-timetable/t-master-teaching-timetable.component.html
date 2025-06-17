@@ -98,13 +98,18 @@ animate-fade-in-out
 
           <!-- Instructor -->
           <td>
-            <input *ngIf="editIndex === i" [(ngModel)]="session.instructor" class="border rounded px-2 py-1 w-full text-xs" />
+            <select *ngIf="editIndex === i" [(ngModel)]="session.instructor" class="border rounded px-2 py-1 w-full text-xs">
+              <option *ngFor="let inst of instructors" [value]="inst.title +' '+ inst.first_name +'  '+ inst.last_name">{{ inst.title +' '+ inst.first_name +'  '+ inst.last_name }}</option>
+            </select>
             <span *ngIf="editIndex !== i">{{ session.instructor }}</span>
           </td>
 
+
           <!-- Venue -->
           <td>
-            <input *ngIf="editIndex === i" [(ngModel)]="session.venue" class="border rounded px-2 py-1 w-full text-xs" />
+            <select *ngIf="editIndex === i" [(ngModel)]="session.venue" class="border rounded px-2 py-1 w-full text-xs">
+              <option *ngFor="let v of venue" [value]="v.name">{{ v.name }}</option>
+            </select>
             <span *ngIf="editIndex !== i">{{ session.venue }}</span>
           </td>
 

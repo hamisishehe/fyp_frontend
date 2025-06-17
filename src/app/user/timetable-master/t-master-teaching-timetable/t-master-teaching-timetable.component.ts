@@ -7,6 +7,8 @@ import { Session, TimetableResponse } from '../../../Models/timetableModel';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../../environments/environment';
+import { Venue } from '../../../Models/VenueModel';
+import { InstructorData } from '../../../Models/InstructorModel';
 
 type ExtendedSession = Session & { groupsStr?: string };
 
@@ -33,10 +35,16 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   toastMessage = '';
   toastType: 'error' | 'success' = 'success';
 
+  venue: Venue[] = [];
+  instructors: InstructorData[] = [];
+
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.getLastTimetable();
+    this.GetVenue();
+    this.GetInstructors();
   }
 
   fetchTimetable(): void {
@@ -78,6 +86,7 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   }
 
   GenerateTimeTable() {
+    console.log("...............................");
     this.isLoading = true;
 
     const form_data = {
@@ -85,21 +94,24 @@ export class TMasterTeachingTimetableComponent implements OnInit {
       semester: this.semester,
     };
 
-    const headers = { 'Content-Type': 'application/json' };
+
     const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
 
-    this.http.post<TimetableResponse>(apiUrl, form_data, { headers }).subscribe(
+    this.http.post<TimetableResponse>(apiUrl, form_data).subscribe(
       (response) => {
         if (response.status === 'success') {
+          console.log("1...............................");
           this.timetable = response.data.map(session => ({
             ...session,
             groupsStr: session.groups.join(', ')
           }));
+          console.log("2...............................");
           this.isLoading = false;
           this.showToastMessage('Timetable generated successfully', 'success');
         } else {
           this.showToastMessage('Failed to generate timetable', 'error');
           console.error('Failed to fetch timetable:', response.message);
+          this.isLoading = false;
         }
       },
       (error) => {
@@ -107,6 +119,37 @@ export class TMasterTeachingTimetableComponent implements OnInit {
         console.error('Error fetching timetable:', error);
       }
     );
+  }
+
+  GetInstructors(): void {
+    console.log("Fetching instructors...");
+    this.http.get<InstructorData[]>(`http://127.0.0.1:5000/instructors`)
+      .subscribe(
+        response => {
+          this.instructors = response;
+          console.log('Instructors fetched:', this.instructors);
+          // If needed, call this.initializeTable() here or elsewhere
+        },
+        error => {
+          console.error('Error fetching instructors:', error);
+        }
+      );
+  }
+
+
+
+  GetVenue(): void {
+    console.log("Fetching venues...");
+    this.http.get<Venue[]>(`${environment.baseUrl}/venues`)
+      .subscribe(
+        response => {
+          this.venue = response;
+          console.log('Venues fetched:', response);
+        },
+        error => {
+          console.error('Error fetching venues:', error);
+        }
+      );
   }
 
   generatePDF() {
@@ -220,6 +263,7 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
   enableEdit(index: number): void {
     this.editIndex = index;
+    this.GetVenue(); // fetch venues on edit, if needed
   }
 
   saveEdit(index: number): void {
@@ -233,34 +277,54 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     const draggedIndex = event.previousIndex;
     const targetIndex = event.currentIndex;
 
+    if (draggedIndex === targetIndex) return;
+
     const draggedItem = this.timetable[draggedIndex];
     const targetItem = this.timetable[targetIndex];
 
-    const sameTimeSlot = draggedItem.day === targetItem.day && draggedItem.time === targetItem.time;
+    // Build a new session at the target's day/time
+    const insertedSession = {
+      ...draggedItem,
+      day: targetItem.day,
+      time: targetItem.time
+    };
 
-    if (sameTimeSlot) {
-      const instructorConflict = draggedItem.instructor === targetItem.instructor;
-      const venueConflict = draggedItem.venue === targetItem.venue;
+    // Check for conflicts
+    const hasConflict = this.timetable.some(session =>
+      session.day === insertedSession.day &&
+      session.time === insertedSession.time &&
+      (
+        session.instructor === insertedSession.instructor ||
+        session.venue === insertedSession.venue
+      )
+    );
 
-      if (instructorConflict || venueConflict) {
-        const conflictTypes = [];
-        if (instructorConflict) conflictTypes.push('Instructor');
-        if (venueConflict) conflictTypes.push('Venue');
-
-        this.showToastMessage(
-          `Conflict: ${conflictTypes.join(' and ')} already occupied at this time.`,
-          'error'
-        );
-        return;
-      }
+    if (hasConflict) {
+      this.showToastMessage(`Conflict: Instructor or venue already booked at that time.`, 'error');
+      return; // ❌ Do nothing on conflict
     }
 
-    // Swap sessions
-    [this.timetable[draggedIndex], this.timetable[targetIndex]] = [this.timetable[targetIndex], this.timetable[draggedIndex]];
+    // ✅ Insert the new session after the target
+    this.timetable.splice(targetIndex + 1, 0, insertedSession);
 
-    this.showToastMessage('Timetable updated successfully.', 'success');
+    // ✅ Remove the original dragged session
+    const removeIndex = draggedIndex > targetIndex ? draggedIndex + 1 : draggedIndex;
+    this.timetable.splice(removeIndex, 1);
 
+    this.showToastMessage('Session inserted successfully.', 'success');
     this.saveTimetable();
+  }
+
+
+
+  showToastMessage(message: string, type: 'error' | 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToast = true;
+
+    setTimeout(() => {
+      this.showToast = false;
+    }, 4000);
   }
 
   saveTimetable(): void {
@@ -284,13 +348,4 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     );
   }
 
-  showToastMessage(message: string, type: 'error' | 'success') {
-    this.toastMessage = message;
-    this.toastType = type;
-    this.showToast = true;
-
-    setTimeout(() => {
-      this.showToast = false;
-    }, 4000);
-  }
 }

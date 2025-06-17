@@ -24,8 +24,15 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   timetable: ExtendedSession[] = [];
   draftNumber: string = 'DRAFT TWO';
   releaseDate: string = new Date().toISOString().split('T')[0];
+
   semester: number = 0;
   start_time: string = '';
+  break_time:String ='';
+  end_break_time:string='';
+  days: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday','Sunday'];
+  selectedDays: string[] = [];
+
+
   isLoading: boolean = false;
 
   isOpen = false;
@@ -90,10 +97,14 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     this.isLoading = true;
 
     const form_data = {
+      b_start_time:this.break_time,
+      b_end_time:this.end_break_time,
       start_time: this.start_time,
       semester: this.semester,
+      days: this.selectedDays // 👈 include selected days
     };
 
+    console.log(form_data);
 
     const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
 
@@ -119,6 +130,16 @@ export class TMasterTeachingTimetableComponent implements OnInit {
         console.error('Error fetching timetable:', error);
       }
     );
+  }
+
+
+  toggleDaySelection(day: string, event: Event) {
+    const checkbox = (event.target as HTMLInputElement);
+    if (checkbox.checked) {
+      this.selectedDays.push(day);
+    } else {
+      this.selectedDays = this.selectedDays.filter(d => d !== day);
+    }
   }
 
   GetInstructors(): void {

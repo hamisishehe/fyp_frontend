@@ -151,6 +151,80 @@ animate-fade-in-out
         <form (ngSubmit)="GenerateTimeTable()" #generateform="ngForm">
 
 
+          <div class="mt-4">
+            <label class="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
+              Select Days
+            </label>
+
+            <!-- Container with horizontal layout -->
+            <div class="flex flex-wrap gap-4">
+              <div *ngFor="let day of days" class="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  [id]="day"
+                  [value]="day"
+                  (change)="toggleDaySelection(day, $event)"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded
+                         focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800
+                         focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label
+                  [for]="day"
+                  class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                >
+                  {{ day }}
+                </label>
+              </div>
+            </div>
+
+            <!-- Optional: Show selected days -->
+            <div class="mt-2 text-sm text-gray-700 dark:text-gray-200">
+              Selected Days: {{ selectedDays.join(', ') || 'None' }}
+            </div>
+          </div>
+
+
+
+          <div class="mt-4">
+            <label
+              for="short name"
+              class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+              >Start Break time</label
+            >
+            <select
+            [(ngModel)]="break_time"
+             name="break_time"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+           >
+           <option   value="13:00">13:00</option>
+           <option   value="13:30">13:30</option>
+
+
+         </select>
+            <!-- Error message for Students-->
+
+          </div>
+
+          <div class="mt-4">
+            <label
+              for="short name"
+              class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+              >End Break time</label
+            >
+            <select
+            [(ngModel)]="end_break_time"
+             name="end_break_time"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+           >
+           <option   value="14:00">14:00</option>
+           <option   value="14:30">14:30</option>
+
+
+         </select>
+            <!-- Error message for Students-->
+
+          </div>
+
 
 
           <div class="mt-4">

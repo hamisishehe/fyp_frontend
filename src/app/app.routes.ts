@@ -78,7 +78,7 @@ export const routes: Routes = [
       },
 
       {
-        path: 'user/timetable-master/collagemanagement',
+        path: 'user/timetable-master/collegemanagement',
         component: CollageComponent,
         canActivate: [authGuardGuard],
       },

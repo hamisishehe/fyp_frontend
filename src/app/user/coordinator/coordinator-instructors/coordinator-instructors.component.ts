@@ -200,6 +200,10 @@ updateInstructor(item : any) {
     };
 
 
+    console.log(payload);
+    console.log(item.id);
+
+
   this.isLoading = true;
 
   this.http.put(`${environment.baseUrl}/update_instructor/${item.id}`, payload).subscribe({
@@ -208,6 +212,8 @@ updateInstructor(item : any) {
       this.isLoading = false;
       this.isUpdateModalOpen = false;
       // You can refresh your student list here if needed
+
+      window.location.reload();
 
       this.GetInstructors();
     },

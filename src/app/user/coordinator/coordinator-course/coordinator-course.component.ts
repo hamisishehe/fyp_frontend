@@ -27,8 +27,8 @@ export class CoordinatorCourseComponent {
   Coordinator_id : number = 0;
   course_code : string='';
   course_name : string='';
-  is_tutorial : boolean = true;
-  is_lecture : boolean = true;
+  is_tutorial : boolean = false;
+  is_lecture : boolean = false;
   is_practical : boolean = false;
   semester : string='';
   department_id:number=0;

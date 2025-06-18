@@ -31,6 +31,9 @@ export class TMasterUeTimetableComponent {
   days: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday','Sunday'];
   selectedDays: string[] = [];
 
+  showToast = false;
+  toastMessage = '';
+  toastType: 'error' | 'success' = 'success';
 
   isOpen = false;
   isUploadOpen = false;
@@ -72,7 +75,7 @@ export class TMasterUeTimetableComponent {
 
     console.log("....................................");
 
-    const apiUrl = 'http://localhost:5000/generate_exam_timetable'; // Your Flask endpoint
+    const apiUrl = 'http://localhost:5000/generate_exam_timetable';
 
     console.log("2....................................");
     this.http.post<ExamTimetable[]>(apiUrl, form_data).subscribe(
@@ -80,9 +83,12 @@ export class TMasterUeTimetableComponent {
 
           this.timetable = response;
           console.log(response);
+          this.showToastMessage('Timetable generated successfully', 'success');
+          window.location.reload();
 
       },
       (error) => {
+        this.showToastMessage('Error generating timetable', 'error');
         console.error('Error fetching timetable:', error);
       }
     );
@@ -117,11 +123,10 @@ export class TMasterUeTimetableComponent {
   // }
 
 
-
   generatePDF() {
     const pdf = new jsPDF();
     const img = new Image();
-    img.src = 'images/logo.png';
+    img.src = 'images/logo.png'; // Make sure the path is correct
 
     img.onload = () => {
       pdf.addImage(img, 'PNG', 10, 10, 20, 20);
@@ -130,13 +135,11 @@ export class TMasterUeTimetableComponent {
       pdf.setFont("times", "bold");
       pdf.setFontSize(12);
 
-
       const centerText = (text: string, yPos: number) => {
         const textWidth = pdf.getTextWidth(text);
         const x = (pageWidth - textWidth) / 2;
         pdf.text(text, x, yPos);
       };
-
 
       let y = 20;
       centerText("THE UNIVERSITY OF DODOMA", y);
@@ -145,33 +148,30 @@ export class TMasterUeTimetableComponent {
       y += 8;
       centerText(`UNIVERSITY EXAMINATION TIMETABLE`, y);
       y += 8;
-      centerText("SEMESTER TWO 2024/2025", y);
+      centerText("SEMESTER ONE 2024/2025", y);
       y += 10;
-
 
       const release = new Date(this.releaseDate);
       const formattedDate = release.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
       centerText(`Released on: ${formattedDate}`, y);
 
-
-      const tableColumn = ["DATE", "TIME", "COURSE", "SITTING PLAN", "VENUE"];
+      const tableColumn = ["DAY", "TIME", "SITTING PLAN", "VENUE"];
       const tableRows: string[][] = [];
 
       this.timetable.forEach(session => {
-        const sessionData: string[] = [
-          session.date,
+        const row: string[] = [
+          `${session.day}\n${session.date}`,
           session.time,
-          session.schedule,
+          `${session.date} ${session.day}\n${session.schedule}`,
           session.venue
         ];
-        tableRows.push(sessionData);
+        tableRows.push(row);
       });
 
       autoTable(pdf, {
         head: [tableColumn],
         body: tableRows,
-        startY: 60,
+        startY: 70,
 
         styles: {
           lineColor: [0, 0, 0],
@@ -192,17 +192,11 @@ export class TMasterUeTimetableComponent {
         didParseCell: function (data) {
           const colIndex = data.column.index;
           const cell = data.cell;
-
-          // Make Course italic (column index 2)
           if (data.section === 'body' && colIndex === 2) {
             cell.styles.fontStyle = 'italic';
           }
-
-
         }
       });
-
-
 
       pdf.save('timetable.pdf');
     };
@@ -219,16 +213,48 @@ export class TMasterUeTimetableComponent {
 
 
   onDrop(event: CdkDragDrop<any[]>) {
-    const prev = this.timetable[event.previousIndex];
-    const curr = this.timetable[event.currentIndex];
+    const draggedIndex = event.previousIndex;
+    const targetIndex = event.currentIndex;
 
-    if (event.previousIndex === event.currentIndex) return;
+    if (draggedIndex === targetIndex) return;
 
-    // // Swap only the specified fields
-    // [prev.s, curr.course_code] = [curr.course_code, prev.course_code];
-    // [prev.groups, curr.groups] = [curr.groups, prev.groups];
-    // [prev.venue, curr.venue] = [curr.venue, prev.venue];
+    const draggedItem = this.timetable[draggedIndex];
+    const targetItem = this.timetable[targetIndex];
+
+    // Build a new session using target's time and day
+    const updatedSession = {
+      ...draggedItem,
+      day: targetItem.day,
+      date: targetItem.date,
+      time: targetItem.time
+    };
+
+    // Check for conflict (same day, same time, same venue)
+    const conflict = this.timetable.some(session =>
+      session !== draggedItem &&
+      session.day === updatedSession.day &&
+      session.time === updatedSession.time &&
+      session.venue === updatedSession.venue
+    );
+
+    if (conflict) {
+      this.showToastMessage(`Conflict: Venue already booked on ${updatedSession.day} at ${updatedSession.time}.`, 'error');
+      return;
+    }
+
+    // Insert updated session at target index
+    this.timetable.splice(targetIndex, 0, updatedSession);
+
+    // Remove old dragged session
+    const removeIndex = draggedIndex > targetIndex ? draggedIndex + 1 : draggedIndex;
+    this.timetable.splice(removeIndex, 1);
+
+    this.showToastMessage('Session moved successfully.', 'success');
+
   }
+
+
+
 
   // Update the timetable by sending the modified timetable back to the backend
   updateTimetable(updatedTimetable: any): void {
@@ -242,5 +268,16 @@ export class TMasterUeTimetableComponent {
         console.error('Error updating timetable:', error);
       }
     );
+  }
+
+
+  showToastMessage(message: string, type: 'error' | 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToast = true;
+
+    setTimeout(() => {
+      this.showToast = false;
+    }, 4000);
   }
 }

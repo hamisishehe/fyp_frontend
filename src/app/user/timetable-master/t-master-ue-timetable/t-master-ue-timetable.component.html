@@ -39,6 +39,23 @@
 
   <div class="w-full h-full mt-10">
 
+          <!-- Toast Notification -->
+<div
+*ngIf="showToast"
+class="fixed top-5 right-5 z-50 max-w-sm w-full rounded shadow-lg p-4
+text-white
+animate-fade-in-out
+"
+[ngClass]="{
+  'bg-red-600': toastType === 'error',
+  'bg-green-600': toastType === 'success'
+}"
+>
+{{ toastMessage }}
+</div>
+
+
+
   <!-- timetable.component.html -->
   <div class="w-full timetable" id="timetable" cdkDropList [cdkDropListData]="timetable" (cdkDropListDropped)="onDrop($event)">
     <table style="width: 100%;">
@@ -142,15 +159,21 @@
               <label
                 for="short name"
                 class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-                >Star time</label
+                >Start time</label
               >
-              <input
-              type="time"
+              <select
               [(ngModel)]="start_time2"
-               name="start_date"
+               name="collage_id"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
              >
-             </div>
+             <option   value="07:30">07:30</option>
+             <option   value="08:00">08:00</option>
+
+           </select>
+              <!-- Error message for Students-->
+
+            </div>
+
 
               <!-- Error message for Students-->
 

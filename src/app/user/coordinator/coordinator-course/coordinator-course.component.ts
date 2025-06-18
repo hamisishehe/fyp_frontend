@@ -52,8 +52,7 @@ export class CoordinatorCourseComponent {
   ngOnInit() {
 
     this.getProfile();
-    this.GetCourse();
-    this.GetDepartment();
+
   }
 
 
@@ -82,6 +81,8 @@ export class CoordinatorCourseComponent {
             this.Coordinator_id = this.userData.id;
 
             console.log(this.userData.id);
+            this.GetDepartment();
+            this.GetDepartmentById();
           },
           (error) => {
             console.error('Error fetching user profile', error);
@@ -145,7 +146,7 @@ GetCourse(){
 
   console.log("1................")
 
-  this.http.get<CourseData[]>(`${environment.baseUrl}/course_list`)
+  this.http.get<CourseData[]>(`${environment.baseUrl}/courses/by-department/${this.department_id}`)
     .subscribe(
       response => {
 
@@ -163,26 +164,55 @@ GetCourse(){
 }
 
 
-  GetDepartment(){
+GetDepartmentById(){
 
-    console.log("................")
+  console.log("................")
 
-    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
-      .subscribe(
-        response => {
+  this.http.get<any>(`${environment.baseUrl}/departments/${this.userData?.department}`)
+    .subscribe(
+      response => {
 
-          this.department = response;
-          console.log(this.department);
+        console.log("1................")
+        this.department_id = response.department_id;
+        console.log(this.department_id);
+        console.log("2................")
+
+        this.GetCourse();
 
 
-        },
-        error => {
+      },
+      error => {
 
 
-          console.log(error);
-        }
-      );
-  }
+        console.log(error);
+      }
+    );
+}
+
+GetDepartment(){
+
+  console.log("................")
+
+  this.http.get<any>(`${environment.baseUrl}/department_id/${this.userData?.department}`)
+    .subscribe(
+      response => {
+
+        console.log("1................")
+        this.department_id = response.department_id;
+        console.log(this.department_id);
+        console.log("2................")
+
+        this.GetCourse();
+
+
+      },
+      error => {
+
+
+        console.log(error);
+      }
+    );
+}
 
 
 

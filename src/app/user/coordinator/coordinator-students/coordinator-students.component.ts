@@ -58,8 +58,6 @@ selectedStudent: any = {};  // will store student info for editing
     }, 100);
 
     this.getProfile();
-    this.GetStudents();
-    this.GetDepartment();
 
   }
 
@@ -90,6 +88,8 @@ selectedStudent: any = {};  // will store student info for editing
 
             console.log(this.userData.id);
 
+            this.GetDepartment();
+
 
           },
           (error) => {
@@ -106,8 +106,8 @@ selectedStudent: any = {};  // will store student info for editing
     console.log("................")
 
     const form_data = {
-      programme: this.programme,
-      programme_code:this.programme_code,
+      programme: this.programme_code,
+      programme_code:this.programme,
       duration: this.duration,
       coordinator_id: this.Coordinator_id,  // make sure this is set
       department_id:this.department_id
@@ -153,7 +153,7 @@ GetStudents(){
 
   console.log("................");
 
-  this.http.get<StudentData[]>(`${environment.baseUrl}/students`)
+  this.http.get<StudentData[]>(`${environment.baseUrl}/students/by-department/${this.department_id}`)
     .subscribe(
       response => {
 
@@ -192,6 +192,7 @@ updateStudentProgram(item : any) {
       this.isLoading = false;
       this.isUpdateModalOpen = false;
       // You can refresh your student list here if needed
+      window.location.reload();
 
       this.GetStudents();
     },
@@ -205,25 +206,29 @@ updateStudentProgram(item : any) {
 
 
 
-  GetDepartment(){
+GetDepartment(){
 
-    console.log("................")
+  console.log("................")
 
-    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
-      .subscribe(
-        response => {
+  this.http.get<any>(`${environment.baseUrl}/department_id/${this.userData?.department}`)
+    .subscribe(
+      response => {
 
-          this.department = response;
-          console.log(this.department);
+        console.log("1................")
+        this.department_id = response.department_id;
+        console.log(this.department_id);
+        this.GetStudents();
 
-        },
-        error => {
+        console.log("2................")
+
+      },
+      error => {
 
 
-          console.log(error);
-        }
-      );
-  }
+        console.log(error);
+      }
+    );
+}
 
 
 get filteredVenues() {

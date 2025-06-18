@@ -60,62 +60,153 @@
 </div>
 
 
-<table class="w-full">
+<table  class="w-full">
   <thead>
-    <!-- ... keep your existing <th> structure as-is ... -->
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let item of instructors; let i = index">
-      <tr *ngIf="item.department.short_name === userData?.department">
-        <td class="font-bold">{{ i + 1 }}</td>
-        <td class="px-6 py-4 border border-gray-300">
-          <input *ngIf="editIndex === i" [(ngModel)]="item.first_name" class="w-full px-2 py-1 border rounded" />
-          <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.first_name }}</span>
-        </td>
-        <td class="px-6 py-4 border border-gray-300">
-          <input *ngIf="editIndex === i" [(ngModel)]="item.middle_name" class="w-full px-2 py-1 border rounded" />
-          <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.middle_name }}</span>
-        </td>
-        <td class="px-6 py-4 border border-gray-300">
-          <input *ngIf="editIndex === i" [(ngModel)]="item.last_name" class="w-full px-2 py-1 border rounded" />
-          <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.last_name }}</span>
-        </td>
-        <td class="px-6 py-4 border border-gray-300">
-          <input *ngIf="editIndex === i" [(ngModel)]="item.gender" class="w-full px-2 py-1 border rounded" />
-          <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.gender }}</span>
-        </td>
-        <td class="px-6 py-4 border border-gray-300">
-          <input *ngIf="editIndex === i" [(ngModel)]="item.email" class="w-full px-2 py-1 border rounded" />
-          <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.email }}</span>
-        </td>
-        <td class="px-6 py-4 border border-gray-300">
-          <input *ngIf="editIndex === i" [(ngModel)]="item.phone_number" class="w-full px-2 py-1 border rounded" />
-          <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.phone_number }}</span>
-        </td>
-        <td class="px-6 py-4 border border-gray-300 whitespace-nowrap">
-          <ng-container *ngIf="editIndex !== i; else editing">
-            <button (click)="editIndex = i">
-              <span class="px-2 py-1 text-sm">
-                <svg class="w-6 h-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
-                  <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
-                </svg>
+      <tr>
+        <th>
+          <span class="flex items-center">
+             #
+              <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+              </svg>
+          </span>
+      </th>
+          <th>
+              <span class="flex items-center">
+                 First Name
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                  </svg>
               </span>
-            </button>
-          </ng-container>
-          <ng-template #editing>
-            <div class="flex flex-col gap-2">
-              <button (click)="updateInstructor(item)" class="text-blue-500">Save</button>
-              <button (click)="cancelEdit()" class="text-red-400">Cancel</button>
-            </div>
-          </ng-template>
-        </td>
+          </th>
+
+          <th>
+            <span class="flex items-center">
+               Middle Name
+                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                </svg>
+            </span>
+        </th>
+
+        <th>
+          <span class="flex items-center">
+             Last Name
+              <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+              </svg>
+          </span>
+      </th>
+
+      <th>
+          <span class="flex items-center">
+             Gender
+              <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+              </svg>
+          </span>
+      </th>
+
+      <th>
+        <span class="flex items-center">
+          Email
+            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+            </svg>
+        </span>
+    </th>
+
+    <th>
+      <span class="flex items-center">
+         Phone Number
+          <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+          </svg>
+      </span>
+  </th>
+
+
+
+  <th>
+    <span class="flex items-center">
+      Actions
+        <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+        </svg>
+    </span>
+</th>
+
       </tr>
-    </ng-container>
+  </thead>
+  <tbody >
+
+      <tr *ngFor="let item of paginatedVenues; let i = index">
+          <td class="font-bold">{{ i + 1 }}</td>
+      <td class="px-6 py-4 border border-gray-300">
+        <input *ngIf="editIndex === i" [(ngModel)]="item.first_name" class="w-full px-2 py-1 border rounded" />
+        <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.first_name }}</span>
+      </td>
+      <td class="px-6 py-4 border border-gray-300">
+        <input *ngIf="editIndex === i" [(ngModel)]="item.middle_name" class="w-full px-2 py-1 border rounded" />
+        <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.middle_name }}</span>
+      </td>
+        <td class="px-6 py-4 border border-gray-300">
+        <input *ngIf="editIndex === i" [(ngModel)]="item.last_name" class="w-full px-2 py-1 border rounded" />
+        <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.last_name }}</span>
+      </td>
+         <td class="px-6 py-4 border border-gray-300">
+        <input *ngIf="editIndex === i" [(ngModel)]="item.gender" class="w-full px-2 py-1 border rounded" />
+        <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.gender }}</span>
+      </td>
+       <td class="px-6 py-4 border border-gray-300">
+        <input *ngIf="editIndex === i" [(ngModel)]="item.email" class="w-full px-2 py-1 border rounded" />
+        <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.email }}</span>
+      </td>
+        <td class="px-6 py-4 border border-gray-300">
+        <input *ngIf="editIndex === i" [(ngModel)]="item.phone_number" class="w-full px-2 py-1 border rounded" />
+        <span *ngIf="editIndex !== i" class="text-gray-800 dark:text-gray-300">{{ item.phone_number }}</span>
+      </td>
+         <td class="px-6 py-4 border border-gray-300 whitespace-nowrap">
+        <ng-container *ngIf="editIndex !== i; else editing">
+          <button (click)="editIndex = i">
+            <span class="px-2 py-1 text-sm">
+              <!-- Edit icon SVG -->
+              <svg class="w-6 h-6 text-blue-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
+              </svg>
+            </span>
+          </button>
+        </ng-container>
+        <ng-template #editing>
+          <div class="flex flex-col gap-2">
+               <button (click)="updateInstructor(item)" class="text-blue-500 ">Save</button>
+          <button (click)="cancelEdit()" class="text-red-400 ">Cancel</button>
+
+          </div>
+
+        </ng-template>
+      </td>
+
+
+
+    </tr>
+
+
   </tbody>
 </table>
 
-<!-- ❌ Removed Pagination Controls -->
+<!-- Pagination Buttons -->
+<div class="flex justify-center gap-2 mt-4">
+  <button
+    *ngFor="let page of [].constructor(totalPages); let i = index"
+    (click)="currentPage = i + 1"
+    [class.bg-blue-600]="currentPage === i + 1"
+    class="px-3 py-1 text-sm border rounded hover:bg-blue-100"
+  >
+    {{ i + 1 }}
+  </button>
+</div>
 
 
 </div>
@@ -151,33 +242,6 @@
             <form (ngSubmit)="Insert_NewInstructor()" #Instructorform="ngForm">
 
 
-
-                   <div class="mt-4">
-                  <label
-                    for="department"
-                    class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-                    >Department</label
-                  >
-                   <select
-                id="departmen"
-                name="departmen"
-                [(ngModel)]="department_id"
-                #v_department="ngModel"
-                class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
-                required
-                >
-        <ng-container *ngFor="let item of department">
-  <option *ngIf="item.short_name === userData?.department" [value]="item.id">
-    {{item.collage.short_name}} | {{item.short_name}}
-  </option>
-</ng-container>
-
-                </select>
-                <div
-                  *ngIf="v_department.invalid && v_department.touched"
-                  class="mt-1 text-sm text-red-600"
-                ></div>
-                </div>
 
 
               <div class="mt-4">

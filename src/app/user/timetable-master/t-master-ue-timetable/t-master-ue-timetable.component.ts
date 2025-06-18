@@ -25,14 +25,18 @@ export class TMasterUeTimetableComponent {
 
 
   ngOnInit(): void {
-    this.fetchExamTimetable();
+
   }
 
   // Fetch timetable from backend
-  fetchExamTimetable(): void {
+  GenerateTimetable(): void {
+
+    console.log("....................................");
+
     const apiUrl = 'http://localhost:5000/generate_exam_timetable'; // Your Flask endpoint
 
-    this.http.get<ExamTimetable[]>(apiUrl, {}).subscribe(
+    console.log("2....................................");
+    this.http.post<ExamTimetable[]>(apiUrl, {}).subscribe(
       (response) => {
 
           this.timetable = response;

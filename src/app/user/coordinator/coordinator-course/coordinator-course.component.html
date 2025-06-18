@@ -139,8 +139,8 @@
   </tr>
 </thead>
 <tbody>
-  <ng-container *ngFor="let item of paginatedVenues; let i = index">
-    <tr *ngIf="item.department.short_name === userData?.department">
+
+    <tr *ngFor="let item of paginatedVenues; let i = index">
       <td class="font-bold">{{ i + 1 }}</td>
       <td class="px-6 py-4 border border-gray-300">
         <input *ngIf="editIndex === i" [(ngModel)]="item.course_code" class="w-full px-2 py-1 border rounded" />
@@ -160,7 +160,7 @@
       </td>
     </tr>
 
-  </ng-container>
+
 </tbody>
 
 
@@ -202,32 +202,7 @@
         <form (ngSubmit)="InsertNewCourse()" #Studentform="ngForm">
 
 
-             <div class="mt-4">
-                  <label
-                    for="department"
-                    class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-                    >Department</label
-                  >
-                   <select
-                id="departmen"
-                name="departmen"
-                [(ngModel)]="department_id"
-                #v_department="ngModel"
-                class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
-                required
-                >
-        <ng-container *ngFor="let item of department">
-  <option *ngIf="item.short_name === userData?.department" [value]="item.id">
-    {{item.collage.short_name}} | {{item.short_name}}
-  </option>
-</ng-container>
 
-                </select>
-                <div
-                  *ngIf="v_department.invalid && v_department.touched"
-                  class="mt-1 text-sm text-red-600"
-                ></div>
-                </div>
 
 
           <div class="mt-4">

@@ -82,6 +82,14 @@
               </svg>
           </span>
       </th>
+      <th class="border border-gray-300">
+        <span class="flex items-center">
+            Code
+            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+            </svg>
+        </span>
+    </th>
           <th class="border border-gray-300">
               <span class="flex items-center">
                   Name
@@ -91,14 +99,7 @@
               </span>
           </th>
 
-            <th class="border border-gray-300">
-              <span class="flex items-center">
-                  Code
-                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                  </svg>
-              </span>
-          </th>
+
 
           <th class="border border-gray-300">
             <span class="flex items-center">
@@ -122,8 +123,8 @@
   </thead>
  <tbody >
 
-  <ng-container *ngFor="let item of paginatedVenues, let i = index">
-      <tr *ngIf="item.department.short_name === userData?.department">
+
+      <tr *ngFor="let item of paginatedVenues, let i = index">
 
     <td class="font-bold border border-gray-300" >{{ item.id }}</td>
     <!-- Programme -->
@@ -170,8 +171,6 @@
   </tr>
 
 
-  </ng-container>
-
 
 
 
@@ -214,32 +213,7 @@
          <div class="p-3 ">
             <form (ngSubmit)="insert_Program()" #Studentform="ngForm">
 
-                   <div class="mt-4">
-                  <label
-                    for="department"
-                    class="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-                    >Department</label
-                  >
-                   <select
-                id="departmen"
-                name="departmen"
-                [(ngModel)]="department_id"
-                #v_department="ngModel"
-                class="block w-full p-2 text-sm font-bold text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray -100 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
-                required
-                >
-        <ng-container *ngFor="let item of department">
-  <option *ngIf="item.short_name === userData?.department" [value]="item.id">
-    {{item.collage.short_name}} | {{item.short_name}}
-  </option>
-</ng-container>
 
-                </select>
-                <div
-                  *ngIf="v_department.invalid && v_department.touched"
-                  class="mt-1 text-sm text-red-600"
-                ></div>
-                </div>
 
               <div class="mt-4">
                 <label

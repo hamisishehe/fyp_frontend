@@ -59,7 +59,7 @@
 
   <label class="text-sm">
     Show
-    <select [(ngModel)]="pageSize" (change)="currentPage = 1" class="px-2 py-1 border rounded ml-1">
+    <select [(ngModel)]="pageSize" (change)="currentPage = 1" class="px-2 py-1 ml-1 border rounded">
       <option [value]="10">10</option>
       <option [value]="20">20</option>
       <option [value]="filteredVenues.length">All</option>
@@ -74,7 +74,7 @@
     <tr>
       <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">#</th>
       <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">Name</th>
-      <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">Collage</th>
+      <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">College</th>
       <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">Type</th>
       <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">Capacity</th>
       <th scope="col" class="px-6 py-3 text-xs font-semibold tracking-wider text-gray-700 uppercase dark:text-gray-300">Actions</th>
@@ -122,8 +122,8 @@
         </ng-container>
         <ng-template #editing>
           <div class="flex flex-col gap-2">
-               <button (click)="updateVenue(item)" class=" text-blue-500">Save</button>
-          <button (click)="cancelEdit()" class=" text-red-400">Cancel</button>
+               <button (click)="updateVenue(item)" class="text-blue-500 ">Save</button>
+          <button (click)="cancelEdit()" class="text-red-400 ">Cancel</button>
 
           </div>
 
@@ -138,7 +138,7 @@
 </table>
 
 <!-- Pagination Buttons -->
-<div class="flex justify-center mt-4 gap-2">
+<div class="flex justify-center gap-2 mt-4">
   <button
     *ngFor="let page of [].constructor(totalPages); let i = index"
     (click)="currentPage = i + 1"

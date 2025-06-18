@@ -76,7 +76,7 @@ onCheckboxChange() {
           instructor_id: this.instructor_id,
           course_id: this.course_id,
           student_id: this.student_id,
-          progra_group:this.group
+          program_group:this.group
         };
 
         const headers = { 'Content-Type': 'application/json' };
@@ -306,6 +306,9 @@ GetAssignedCourse() {
   trackById = (index: number, item: any): number => {
     return item?.id ?? index;  // Use optional chaining to prevent crash
   };
+
+
+
 
 
 

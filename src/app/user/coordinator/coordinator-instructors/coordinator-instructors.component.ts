@@ -21,7 +21,7 @@ export class CoordinatorInstructorsComponent implements OnInit{
 
   userData : UserDetails | null = null;
   instructors: InstructorData [] = [];
-  department: DepartmentModel [] = [];
+  departments: DepartmentModel [] = [];
   isLoading : boolean = false;
 
 
@@ -53,8 +53,6 @@ export class CoordinatorInstructorsComponent implements OnInit{
   ngOnInit() {
 
     this.getProfile();
-    this.GetDepartment();
-    this.GetInstructors();
   }
 
 
@@ -83,6 +81,8 @@ export class CoordinatorInstructorsComponent implements OnInit{
             this.Coordinator_id = this.userData.id;
 
             console.log(this.userData);
+
+            this.GetDepartment();
           },
           (error) => {
             console.error('Error fetching user profile', error);
@@ -142,17 +142,45 @@ export class CoordinatorInstructorsComponent implements OnInit{
 }
 
 
+GetDepartmentById(){
+
+  console.log("................")
+
+  this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments/${this.department_id}`)
+    .subscribe(
+      response => {
+
+        console.log("1................")
+        this.departments = response;
+
+        console.log(this.departments);
+        console.log("2................")
+
+      },
+      error => {
+
+
+        console.log(error);
+      }
+    );
+}
+
+
   GetDepartment(){
 
     console.log("................")
 
-    this.http.get<DepartmentModel[]>(`${environment.baseUrl}/departments`)
+    this.http.get<any>(`${environment.baseUrl}/department_id/${this.userData?.department}`)
       .subscribe(
         response => {
 
-          this.department = response;
-          console.log(this.department);
+
+          this.department_id = response.department_id;
+          console.log(this.department_id);
           this.initializeTable();
+          this.GetDepartmentById();
+
+          this.GetInstructors();
 
         },
         error => {
@@ -167,14 +195,12 @@ export class CoordinatorInstructorsComponent implements OnInit{
 
 GetInstructors(){
 
-  console.log("................")
-
-  this.http.get<InstructorData[]>(`http://127.0.0.1:5000/instructors`)
+  this.http.get<InstructorData[]>(`http://127.0.0.1:5000/instructors/by-department/${this.department_id}`)
     .subscribe(
       response => {
 
         this.instructors = response;
-        console.log(this.instructors);
+        console.log(response);
         this.initializeTable();
 
       },
@@ -184,6 +210,31 @@ GetInstructors(){
         console.log(error);
       }
     );
+}
+
+
+
+get filteredCourse() {
+  if (!this.searchText) return this.instructors;
+  return this.instructors.filter(item =>
+    (item.first_name?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+     item.last_name?.toLowerCase().includes(this.searchText.toLowerCase())
+     )
+  );
+}
+
+get paginatedVenues() {
+  if (this.pageSize === this.filteredCourse.length) {
+    // show all if pageSize = all
+    return this.filteredCourse;
+  }
+  const start = (this.currentPage - 1) * this.pageSize;
+  const end = start + this.pageSize;
+  return this.filteredCourse.slice(start, end);
+}
+
+get totalPages() {
+  return Math.ceil(this.filteredCourse.length / this.pageSize) || 1;
 }
 
 updateInstructor(item : any) {
@@ -222,32 +273,6 @@ updateInstructor(item : any) {
       this.isLoading = false;
     }
   });
-}
-
-
-
-
-get filteredCourse() {
-  if (!this.searchText) return this.instructors;
-  return this.instructors.filter(item =>
-    (item.first_name?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-     item.last_name?.toLowerCase().includes(this.searchText.toLowerCase())
-     )
-  );
-}
-
-get paginatedVenues() {
-  if (this.pageSize === this.filteredCourse.length) {
-    // show all if pageSize = all
-    return this.filteredCourse;
-  }
-  const start = (this.currentPage - 1) * this.pageSize;
-  const end = start + this.pageSize;
-  return this.filteredCourse.slice(start, end);
-}
-
-get totalPages() {
-  return Math.ceil(this.filteredCourse.length / this.pageSize) || 1;
 }
 
 cancelEdit() {

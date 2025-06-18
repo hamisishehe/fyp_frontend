@@ -5,10 +5,12 @@ import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { ExamTimetable } from '../../../Models/ExamTimetableModel';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-t-master-ue-timetable',
-  imports: [HttpClientModule,CommonModule, DragDropModule],
+  imports: [HttpClientModule,CommonModule, DragDropModule, FormsModule],
   templateUrl: './t-master-ue-timetable.component.html',
   styleUrl: './t-master-ue-timetable.component.css'
 })
@@ -20,23 +22,60 @@ export class TMasterUeTimetableComponent {
   releaseDate: string = new Date().toISOString().split('T')[0]; // Default to today (yyyy-mm-dd)
 
 
+
+  isLoading:boolean =false;
+  semester: number = 0;
+  start_time: string = '';
+  start_time2: string = '';
+  start_date:string ='';
+  days: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday','Sunday'];
+  selectedDays: string[] = [];
+
+
+  isOpen = false;
+  isUploadOpen = false;
+
+
   constructor(private http: HttpClient) {}
 
 
 
   ngOnInit(): void {
-
+    this.fetchTimetable();
   }
+
+
+    fetchTimetable(): void {
+      const apiUrl = `${environment.baseUrl}/api/fetch-exam-timetable-json`;
+
+      this.http.get<ExamTimetable[]>(apiUrl, {}).subscribe(
+        (response) => {
+           this.timetable = response;
+        },
+        (error) => {
+          console.error('Error fetching timetable:', error);
+        }
+      );
+    }
 
   // Fetch timetable from backend
   GenerateTimetable(): void {
+
+
+    const form_data = {
+      start_time:this.start_time2,
+      start_date:this.start_date,
+      semester: this.semester,
+      days: this.selectedDays // 👈 include selected days
+    };
+
 
     console.log("....................................");
 
     const apiUrl = 'http://localhost:5000/generate_exam_timetable'; // Your Flask endpoint
 
     console.log("2....................................");
-    this.http.post<ExamTimetable[]>(apiUrl, {}).subscribe(
+    this.http.post<ExamTimetable[]>(apiUrl, form_data).subscribe(
       (response) => {
 
           this.timetable = response;
@@ -47,6 +86,17 @@ export class TMasterUeTimetableComponent {
         console.error('Error fetching timetable:', error);
       }
     );
+  }
+
+
+
+  toggleDaySelection(day: string, event: Event) {
+    const checkbox = (event.target as HTMLInputElement);
+    if (checkbox.checked) {
+      this.selectedDays.push(day);
+    } else {
+      this.selectedDays = this.selectedDays.filter(d => d !== day);
+    }
   }
 
 
@@ -110,10 +160,9 @@ export class TMasterUeTimetableComponent {
 
       this.timetable.forEach(session => {
         const sessionData: string[] = [
-          session.actual_date,
+          session.date,
           session.time,
-          session.course_code,
-          session.groups.join(', '),
+          session.schedule,
           session.venue
         ];
         tableRows.push(sessionData);
@@ -160,16 +209,25 @@ export class TMasterUeTimetableComponent {
   }
 
 
+  openModal() {
+    this.isOpen = true;
+  }
+
+  closeModal() {
+    this.isOpen = false;
+  }
+
+
   onDrop(event: CdkDragDrop<any[]>) {
     const prev = this.timetable[event.previousIndex];
     const curr = this.timetable[event.currentIndex];
 
     if (event.previousIndex === event.currentIndex) return;
 
-    // Swap only the specified fields
-    [prev.course_code, curr.course_code] = [curr.course_code, prev.course_code];
-    [prev.groups, curr.groups] = [curr.groups, prev.groups];
-    [prev.venue, curr.venue] = [curr.venue, prev.venue];
+    // // Swap only the specified fields
+    // [prev.s, curr.course_code] = [curr.course_code, prev.course_code];
+    // [prev.groups, curr.groups] = [curr.groups, prev.groups];
+    // [prev.venue, curr.venue] = [curr.venue, prev.venue];
   }
 
   // Update the timetable by sending the modified timetable back to the backend

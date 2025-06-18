@@ -1,7 +1,7 @@
 export interface ExamTimetable {
-  actual_date: string;
-  course_code: string;
-  groups: string[];
+  date: string;
+  day: string;
+  schedule: string;
   time: string;
   venue: string;
 }

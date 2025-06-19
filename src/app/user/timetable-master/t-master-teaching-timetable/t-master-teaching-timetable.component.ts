@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
@@ -49,15 +49,15 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.getLastTimetable();
+    this.fetchTimetable();
     this.GetVenue();
     this.GetInstructors();
   }
 
   fetchTimetable(): void {
-    const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
+    const apiUrl = `${environment.baseUrl}/api/fetch-timetable-json`;
 
-    this.http.post<TimetableResponse>(apiUrl, {}).subscribe(
+    this.http.get<TimetableResponse>(apiUrl, {}).subscribe(
       (response) => {
         if (response.status === 'success') {
           this.timetable = response.data.map(session => ({
@@ -76,7 +76,7 @@ export class TMasterTeachingTimetableComponent implements OnInit {
   }
 
   getLastTimetable(): void {
-    const apiUrl = `${environment.baseUrl}/api/fetch-timetable-json`;
+    const apiUrl = `${environment.baseUrl}/timetable_semester_1.json`;
 
     this.http.get<TimetableResponse>(apiUrl).subscribe(
       (response) => {
@@ -97,8 +97,8 @@ export class TMasterTeachingTimetableComponent implements OnInit {
     this.isLoading = true;
 
     const form_data = {
-      b_start_time:this.break_time,
-      b_end_time:this.end_break_time,
+      b_start_time: this.break_time,
+      b_end_time: this.end_break_time,
       start_time: this.start_time,
       semester: this.semester,
       days: this.selectedDays // 👈 include selected days
@@ -108,7 +108,8 @@ export class TMasterTeachingTimetableComponent implements OnInit {
 
     const apiUrl = `${environment.baseUrl}/api/generate-timetable`;
 
-    this.http.post<TimetableResponse>(apiUrl, form_data).subscribe(
+
+    this.http.post<TimetableResponse>(apiUrl, form_data, { }).subscribe(
       (response) => {
         if (response.status === 'success') {
           console.log("1...............................");
